@@ -1,13 +1,13 @@
-package com.zerobase.studying;
+package com.zerobase.munbanggu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StudyingApplication {
+public class MunbangguApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StudyingApplication.class, args);
+		SpringApplication.run(MunbangguApplication.class, args);
 	}
 
 }
