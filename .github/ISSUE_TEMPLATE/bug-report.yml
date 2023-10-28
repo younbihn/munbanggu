@@ -1,0 +1,23 @@
+name: Bug Report
+description: 버그 보고
+title: "[Bug]: "
+body:
+  - type: textarea
+    attributes:
+      label: 📝 개요
+      description: 버그에 대한 설명을 작성해 주세요.
+      placeholder: Assignees, Labels, Projects 체크
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📽️ 재현 방법
+      description: 재현 방법을 작성해 주세요.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 📸 스크린샷
+      description: 버그 발생 스크린샷을 업로드해 주세요.
+    validations:
+      required: false

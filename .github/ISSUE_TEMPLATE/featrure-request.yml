@@ -1,5 +1,5 @@
 name: Feature Request
-description: 새로운 이슈 추가
+description: 새로운 기능 추가
 title: "[Feature]: "
 body:
   - type: textarea
