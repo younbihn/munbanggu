@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.util;
 
-import com.zerobase.munbanggu.dto.UserInfo;
+import com.zerobase.munbanggu.user.dto.UserInfo;
+import com.zerobase.munbanggu.user.type.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -11,7 +12,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.management.relation.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

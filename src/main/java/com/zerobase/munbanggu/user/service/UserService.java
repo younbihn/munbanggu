@@ -5,14 +5,13 @@ import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
-import com.zerobase.munbanggu.dto.SignInDto;
-import com.zerobase.munbanggu.dto.UserUpdateDto;
+import com.zerobase.munbanggu.user.dto.SignInDto;
+import com.zerobase.munbanggu.user.dto.UserUpdateDto;
 import com.zerobase.munbanggu.user.exception.LoginException;
 import com.zerobase.munbanggu.util.JwtService;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.Optional;
-import jdk.jshell.spi.ExecutionControl.UserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

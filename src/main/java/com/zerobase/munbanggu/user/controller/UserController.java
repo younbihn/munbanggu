@@ -1,7 +1,6 @@
 package com.zerobase.munbanggu.user.controller;
 
-import com.zerobase.munbanggu.dto.SignInDto;
-import com.zerobase.munbanggu.dto.UserUpdateDto;
+import com.zerobase.munbanggu.user.dto.UserUpdateDto;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.service.UserService;
 import com.zerobase.munbanggu.util.JwtService;
@@ -9,7 +8,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;

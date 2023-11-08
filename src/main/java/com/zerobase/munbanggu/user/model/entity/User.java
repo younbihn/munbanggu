@@ -3,7 +3,6 @@ package com.zerobase.munbanggu.user.model.entity;
 import com.zerobase.munbanggu.user.type.AuthProvider;
 import com.zerobase.munbanggu.user.type.Role;
 import java.time.LocalDateTime;
-import javax.management.relation.Role;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;

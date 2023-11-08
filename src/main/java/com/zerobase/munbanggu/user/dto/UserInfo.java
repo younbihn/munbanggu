@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.dto;
+package com.zerobase.munbanggu.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
