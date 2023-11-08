@@ -1,7 +1,9 @@
 spring:
 
   profiles:
-    include: secret
+    include:
+    - secret
+    - oauth
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -23,9 +25,6 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-
-  profiles:
-    include: oauth
 
   mail:
     host: smtp.naver.com
