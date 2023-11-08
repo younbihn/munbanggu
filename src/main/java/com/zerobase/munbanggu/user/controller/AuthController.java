@@ -1,6 +1,10 @@
 package com.zerobase.munbanggu.user.controller;
 
 
+import com.zerobase.munbanggu.user.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import com.zerobase.munbanggu.dto.SignInDto;
 import com.zerobase.munbanggu.user.service.UserService;
 import com.zerobase.munbanggu.util.JwtService;
@@ -20,12 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-
     private final UserService userService;
     private final JwtService jwtService;
     private final SendMailService sendMailService;
     private final SendMessageService sendMessageService;
-  
+
     private static final String AUTH_HEADER = "Authorization";
 
     @PostMapping("/sign-in")
@@ -33,6 +36,7 @@ public class AuthController {
         System.out.println(signInDto);
         return ResponseEntity.ok(userService.signIn(signInDto));
     }
+
 
     @PostMapping("/sign-out")
     public ResponseEntity<String> logOut( @RequestHeader(name = AUTH_HEADER) String token){
@@ -42,6 +46,15 @@ public class AuthController {
         }
         jwtService.logout(token);
         return ResponseEntity.ok("로그아웃");
+    }
+
+    private final AuthService authService;
+
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(
+            @RequestHeader(value = "Authorization") String token) {
+        authService.logout(token);
+        return ResponseEntity.ok().build();
     }
   
     @PostMapping("/email-send") //이메일 발송
@@ -64,5 +77,4 @@ public class AuthController {
         return ResponseEntity.ok(sendMessageService.verifyCode(req.get("phoneNumber"),req.get("code")));
 
     }
-
 }
