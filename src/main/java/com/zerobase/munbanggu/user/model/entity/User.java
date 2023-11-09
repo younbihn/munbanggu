@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import reactor.util.annotation.Nullable;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -39,15 +40,19 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private String name;
+
     private String password;
 
     private String nickname;
 
     @Enumerated(EnumType.STRING)
+    @Nullable
     private AuthProvider authProvider;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @Builder.Default
+    private Role role = Role.USER;
 
     private String phone;
 
