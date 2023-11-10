@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.config.auth;
 
-import static com.zerobase.munbanggu.user.exception.ErrorCode.*;
+import static com.zerobase.munbanggu.type.ErrorCode.*;
 
 import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
 import com.zerobase.munbanggu.user.model.entity.User;
@@ -37,7 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         User user = userRepository.findById(oAuth2User.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        NOT_FOUND_EMAIL.getMessage()));
+                        NOT_FOUND_EMAIL.getDescription()));
 
         checkUserAuthProvider(user, oAuth2User);
 

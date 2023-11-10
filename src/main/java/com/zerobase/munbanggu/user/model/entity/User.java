@@ -29,7 +29,7 @@ import reactor.util.annotation.Nullable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="\"USER\"")
+@Table(name="\"user\"")
 public class User {
 
     @Id

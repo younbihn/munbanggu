@@ -13,4 +13,9 @@ public class UserExceptionHandler {
     public ResponseEntity<ErrorResponse> invalidTokenExceptionHandler(InvalidTokenException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> userNotFoundException(UserException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+    }
 }
