@@ -6,6 +6,7 @@ import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
 import com.zerobase.munbanggu.user.dto.SignInDto;
+import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.dto.UserUpdateDto;
 import com.zerobase.munbanggu.user.exception.LoginException;
 import com.zerobase.munbanggu.util.JwtService;
@@ -13,6 +14,8 @@ import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-
     private final JwtService jwtService;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
 
     public String signIn(SignInDto signInDto) {
         User user = userRepository.findByEmail(signInDto.getEmail())
@@ -54,5 +64,19 @@ public class UserService {
     }
     public Optional<User> getUser(Long id){
         return userRepository.findById(id);
+    }
+
+    public void registerUser(UserRegisterDto userDto) {
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        User user = User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .password(encodedPassword)
+                .nickname(userDto.getNickname())
+                .phone(userDto.getPhone())
+                .profileImageUrl(userDto.getProfileImageUrl())
+                .build();
+
+        userRepository.save(user);
     }
 }
