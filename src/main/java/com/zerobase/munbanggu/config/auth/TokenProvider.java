@@ -2,7 +2,11 @@ package com.zerobase.munbanggu.config.auth;
 
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_TOKEN;
 
+import com.zerobase.munbanggu.type.ErrorCode;
 import com.zerobase.munbanggu.user.exception.InvalidTokenException;
+import com.zerobase.munbanggu.user.service.RedisUtil;
+import com.zerobase.munbanggu.user.type.Role;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -43,13 +47,24 @@ public class TokenProvider {
     public static final String REFRESH_TOKEN_KEY = "Refresh-Token";
     private SecretKey secretKey;
 
+    private final RedisUtil redisUtil;
+
     @PostConstruct
     public void init() {
         secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
+    public String generateAccessTokenOrRefreshToken(Long id, String email, Role role, Long expirationTimeInSeconds) {
+
+        String authority = role.getKey();
+
+        Date expiration = new Date(System.currentTimeMillis() + expirationTimeInSeconds);
+        return generateToken(id, email, authority, expiration);
+    }
+
     public String generateAccessTokenOrRefreshToken(CustomOAuth2User oAuth2User, Long expirationTimeInSeconds) {
         String email = oAuth2User.getUser().getEmail();
+        Long id = oAuth2User.getUser().getId();
 
         String authority = "";
         Collection<? extends GrantedAuthority> authorities = oAuth2User.getAuthorities();
@@ -58,21 +73,30 @@ public class TokenProvider {
         }
 
         Date expiration = new Date(System.currentTimeMillis() + expirationTimeInSeconds);
-        return generateToken(email, authority, expiration);
+        return generateToken(id, email, authority, expiration);
+    }
+
+    public String generateAccessToken(Long id, String email, Role role) {
+        return generateAccessTokenOrRefreshToken(id, email, role, accessTokenExpirationTimeInSeconds);
     }
 
     public String generateAccessToken(CustomOAuth2User oAuth2User) {
         return generateAccessTokenOrRefreshToken(oAuth2User, accessTokenExpirationTimeInSeconds);
     }
 
+    public String generateRefreshToken(Long id, String email, Role role) {
+        return generateAccessTokenOrRefreshToken(id, email, role, refreshTokenExpirationTimeInSeconds);
+    }
+
     public String generateRefreshToken(CustomOAuth2User oAuth2User) {
         return generateAccessTokenOrRefreshToken(oAuth2User, refreshTokenExpirationTimeInSeconds);
     }
 
-    private String generateToken(String email, String authority, Date expiration) {
+    private String generateToken(Long id, String email, String authority, Date expiration) {
         Map<String, String> claims = new HashMap<>();
         claims.put("email", email);
         claims.put("authority", authority);
+        claims.put("id", id.toString());
 
         return Jwts.builder()
                 .setSubject(email)
@@ -88,6 +112,20 @@ public class TokenProvider {
 
         response.addHeader(ACCESS_TOKEN_KEY, AUTHORIZATION_PREFIX + accessToken);
         response.addHeader(REFRESH_TOKEN_KEY, AUTHORIZATION_PREFIX + refreshToken);
+    }
+
+    public Integer getId(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(getRawToken(token))
+                    .getBody();
+
+            return Integer.parseInt(claims.get("id").toString());
+        } catch (JwtException | NumberFormatException | NullPointerException e) {
+            throw new InvalidTokenException("예외");
+        }
     }
 
     public String getEmail(String token) {
@@ -126,8 +164,26 @@ public class TokenProvider {
         PrincipalDetails principalDetails = new PrincipalDetails(getEmail(token), getAuthority(token));
         return new UsernamePasswordAuthenticationToken(principalDetails, "",
                 principalDetails.getAuthorities());
+    }
 
+    public void setLogoutTokenInRedis(String token) {
+        if (redisUtil.getData(getEmail(token)) != null) {
+            redisUtil.deleteData(getEmail(token));
+        }
+        Long expirationTimeInSeconds = getExpirationTimeInSeconds(token);
+        redisUtil.setData("BLACK:" + getRawToken(token), "logout", expirationTimeInSeconds);
+    }
 
+    public void saveRefreshTokenInRedis(CustomOAuth2User oAuth2User, String refreshToken) {
+        refreshToken = getRawToken(refreshToken);
+        redisUtil.setData("RT:" + oAuth2User.getUser().getEmail(), refreshToken,
+                refreshTokenExpirationTimeInSeconds);
+    }
+
+    public void saveRefreshTokenInRedis(String email, String refreshToken) {
+        refreshToken = getRawToken(refreshToken);
+        redisUtil.setData("RT:" + email, refreshToken,
+                refreshTokenExpirationTimeInSeconds);
     }
 
 

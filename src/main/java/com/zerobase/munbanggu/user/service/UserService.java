@@ -1,25 +1,23 @@
 package com.zerobase.munbanggu.user.service;
 
 
+import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXISTS;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
-import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXISTS;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
+import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.dto.TokenResponse;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.SignInDto;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.exception.UserException;
-
-import com.zerobase.munbanggu.util.JwtService;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,33 +27,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class UserService {
+
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    private final TokenProvider tokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-    }
-
-    public String signIn(SignInDto signInDto) {
+    public TokenResponse signIn(SignInDto signInDto) {
         User user = userRepository.findByEmail(signInDto.getEmail())
-                .orElseThrow(()-> new UserException(USER_NOT_EXIST));
+                .orElseThrow(() -> new UserException(USER_NOT_EXIST));
 
         // 비밀번호 체크
-        if(!signInDto.getPassword().equals(user.getPassword())){
+        boolean isMatch = passwordEncoder.matches(signInDto.getPassword(), user.getPassword());
+        if (!isMatch) {
             throw new UserException(WRONG_PASSWORD);
-
         }
-        if(user.getRole().equals(INACTIVE)){
+        if (user.getRole().equals(INACTIVE)) {
             throw new UserException(USER_WITHDRAWN);
         }
 
         //return "로그인 완료";
-        return jwtService.createToken(user.getId(), user.getEmail(), user.getRole());
+        String accessToken = tokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole());
+        String refreshToken = tokenProvider.generateRefreshToken(user.getId(), user.getEmail(), user.getRole());
+
+        tokenProvider.saveRefreshTokenInRedis(user.getEmail(), refreshToken);
+
+        return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
+
     public GetUserDto updateUser(Long id, GetUserDto getUserDto) { //유저정보 업데이트
         // 해당하는 유저가 존재하지 않을경우
         User user = userRepository.findById(id)
@@ -68,21 +66,22 @@ public class UserService {
         userRepository.save(user);
         return getUserDto;
     }
-    public Optional<User> getUser(Long id){
+
+    public Optional<User> getUser(Long id) {
         return userRepository.findById(id);
     }
 
-    public GetUserDto getInfo(String email){
+    public GetUserDto getInfo(String email) {
 
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UserException(EMAIL_NOT_EXISTS));
+                .orElseThrow(() -> new UserException(EMAIL_NOT_EXISTS));
 
         return GetUserDto.builder().
-            email(user.getEmail())
-            .nickname(user.getNickname())
-            .phone(user.getPhone())
-            .profileImageUrl(user.getProfileImageUrl())
-            .build();
+                email(user.getEmail())
+                .nickname(user.getNickname())
+                .phone(user.getPhone())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
     }
 
     public void registerUser(UserRegisterDto userDto) {
