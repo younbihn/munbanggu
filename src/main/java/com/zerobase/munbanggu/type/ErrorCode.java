@@ -14,10 +14,12 @@ public enum ErrorCode {
     WRONG_PASSWORD("비밀번호가 일치하지 않습니다."),
     EMAIL_CONFLICT("이미 가입된 이메일 입니다. 다른 방법으로 로그인해 주세요."),
     INVALID_TOKEN("토큰이 유효하지 않습니다."),
-    EMAIL_NOT_EXISTS("가입되지 않은 이메일입니다."),
+    NOT_FOUND_EMAIL("가입되지 않은 이메일입니다."),
+    UNAUTHORIZED("로그인 후 접근 가능합니다."),
     INVALID_EMAIL("이메일이 일치하지 않습니다."),
     INVALID_CODE("인증번호가 일치하지 않습니다."),
     INVALID_PHONE("핸드폰번호가 일치하지 않습니다.")
+
     ;
     private String description;
 }

@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.config;
 
 import com.zerobase.munbanggu.config.auth.CustomOAuth2UserService;
+import com.zerobase.munbanggu.config.auth.JwtAuthenticationEntryPoint;
 import com.zerobase.munbanggu.config.auth.JwtAuthenticationFilter;
 import com.zerobase.munbanggu.config.auth.OAuth2FailureHandler;
 import com.zerobase.munbanggu.config.auth.OAuth2SuccessHandler;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +25,7 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -38,8 +41,10 @@ public class SecurityConfig {
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+                .exceptionHandling() .defaultAuthenticationEntryPointFor(unauthorizedHandler, new AntPathRequestMatcher("/api/**"))
+                .and()
                 .authorizeHttpRequests()
-                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**","/api/auth/verify-email").permitAll()
+                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/api/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
