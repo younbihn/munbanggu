@@ -1,12 +1,13 @@
 package com.zerobase.munbanggu.user.service;
 
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_CODE;
-import static com.zerobase.munbanggu.user.type.RedisTime.PHONE_VALID;
+import static com.zerobase.munbanggu.type.RedisTime.PHONE_VALID;
 
 import com.zerobase.munbanggu.type.ErrorCode;
 import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;
 import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
+import com.zerobase.munbanggu.util.RedisUtil;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;

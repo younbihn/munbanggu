@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.user.type;
+package com.zerobase.munbanggu.type;
 
 import lombok.Getter;
 

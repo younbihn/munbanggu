@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.user.service;
+package com.zerobase.munbanggu.util;
 
 
 import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;

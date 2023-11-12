@@ -21,6 +21,7 @@ import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
+import com.zerobase.munbanggu.util.RedisUtil;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

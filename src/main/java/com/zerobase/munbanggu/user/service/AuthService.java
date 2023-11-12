@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.user.service;
 
 import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.util.RedisUtil;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
