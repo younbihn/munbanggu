@@ -1,10 +1,8 @@
 package com.zerobase.munbanggu.config.auth;
 
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_TOKEN;
-
 import com.zerobase.munbanggu.user.exception.InvalidTokenException;
-import com.zerobase.munbanggu.user.service.RedisUtil;
 import com.zerobase.munbanggu.user.type.Role;
+import com.zerobase.munbanggu.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -102,7 +100,7 @@ public class TokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(new Date())
                 .setExpiration(expiration)
-                .signWith(secretKey)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -148,9 +146,8 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(getRawToken(token));
             return true;
-        } catch (JwtException e) {
-            log.error("JwtException = " + e.getMessage());
-            throw new InvalidTokenException(INVALID_TOKEN.getDescription());
+        }  catch (Exception e) {
+            throw new InvalidTokenException(e.getMessage());
         }
     }
 

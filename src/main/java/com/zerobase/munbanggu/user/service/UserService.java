@@ -1,9 +1,9 @@
 package com.zerobase.munbanggu.user.service;
 
 
-import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXISTS;
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_CODE;
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_PHONE;
+import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_EMAIL;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
@@ -85,7 +85,7 @@ public class UserService {
     public GetUserDto getInfo(String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(EMAIL_NOT_EXISTS));
+                .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));
 
         return GetUserDto.builder().
                 email(user.getEmail())
@@ -134,7 +134,7 @@ public class UserService {
      */
     public User findByEmailAndPhone(String email, String phone) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UserException(EMAIL_NOT_EXISTS));  //이메일이 db에 있는지 확인
+            .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));  //이메일이 db에 있는지 확인
 
         if (user.getPhone().equals(phone))
             return user;
@@ -192,7 +192,7 @@ public class UserService {
         // 핸드폰 인증 번호가 같으면
         if( info != null && info.getVerificationCode().equals(resetPwDto.getInputCode())) {
             User user = userRepository.findByEmail(info.getEmail())
-                .orElseThrow(() -> new UserException(EMAIL_NOT_EXISTS));
+                .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));
             user.setPassword(resetPwDto.getNewPassword());
             userRepository.save(user);
 

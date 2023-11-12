@@ -1,13 +1,14 @@
 package com.zerobase.munbanggu.config.auth;
 
-import static com.zerobase.munbanggu.type.ErrorCode.*;
+import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_CONFLICT;
+import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_EMAIL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.dto.TokenResponse;
 import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.user.service.RedisUtil;
+import com.zerobase.munbanggu.util.RedisUtil;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         User user = userRepository.findById(oAuth2User.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        EMAIL_NOT_EXISTS.getDescription()));
+                        NOT_FOUND_EMAIL.getDescription()));
 
         checkUserAuthProvider(user, oAuth2User);
 
@@ -48,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         saveRefreshTokenInRedis(oAuth2User, refreshToken);
 
-        log.info("redisUtil.getData(): " + redisUtil.getData("RT:"+oAuth2User.getUser().getEmail()));
+        log.info("redisUtil.getData(): " + redisUtil.getData("RT:" + oAuth2User.getUser().getEmail()));
 
         TokenResponse tokenResponse = TokenResponse.builder()
                 .accessToken(accessToken)

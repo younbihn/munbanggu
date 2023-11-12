@@ -21,8 +21,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        if (isLoginRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader != null && tokenProvider.validateToken(authorizationHeader)) {
+        if (authorizationHeader != null) {
+            String token = authorizationHeader.replace("Bearer ", "");
+            tokenProvider.validateToken(token);
             setAuthToSecurityContextHolder(tokenProvider.getRawToken(authorizationHeader));
         }
         filterChain.doFilter(request, response);
@@ -31,5 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void setAuthToSecurityContextHolder(String token) {
         Authentication authentication = tokenProvider.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private boolean isLoginRequest(HttpServletRequest request) {
+        return request.getRequestURI().contains("/sign-in");
     }
 }
