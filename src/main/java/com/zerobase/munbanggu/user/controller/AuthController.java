@@ -2,6 +2,10 @@ package com.zerobase.munbanggu.user.controller;
 
 
 import com.zerobase.munbanggu.dto.TokenResponse;
+import com.zerobase.munbanggu.user.dto.FindUserInfoDto;
+import com.zerobase.munbanggu.user.dto.MailVerificationDto;
+import com.zerobase.munbanggu.user.dto.ResetPwDto;
+import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;
 import com.zerobase.munbanggu.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +15,7 @@ import com.zerobase.munbanggu.util.JwtService;
 import com.zerobase.munbanggu.user.service.SendMailService;
 import com.zerobase.munbanggu.user.service.SendMessageService;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -56,24 +60,37 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/email-send") //이메일 발송
-    public ResponseEntity<AuthenticationStatus> sendMail(@RequestBody Map<String, String> req) {
-        return ResponseEntity.ok(sendMailService.sendMailVerification(req.get("email")));
+    /**
+     * 메일 인증 controller
+     * @param mailVerificationDto - email, uuidToken
+     * @return AuthenticationStatus.SUCCESS / AuthenticationStatus.FAIL (인증성공여부)
+     */
+    @GetMapping(value = "/verify-email") //이메일 인증
+    public ResponseEntity<AuthenticationStatus> verifyMail(MailVerificationDto mailVerificationDto) {
+        return ResponseEntity.ok(sendMailService.verifyEmail(mailVerificationDto));
     }
 
-    @PostMapping("/email-auth") //이메일 인증
-    public ResponseEntity<AuthenticationStatus> verifyMail(@RequestBody Map<String, String> req) {
-        return ResponseEntity.ok(sendMailService.verifyCode(req.get("email"), req.get("code")));
+    @PostMapping("/verify-phone") // 핸드폰 인증
+    public ResponseEntity<AuthenticationStatus> verifySMS(@RequestBody SmsVerificationInfo smsVerificationInfo) {
+        return ResponseEntity.ok(sendMessageService.verifyCode(smsVerificationInfo));
     }
 
-    @PostMapping("/phone-send") // 핸드폰 인증번호 발송
-    public ResponseEntity<AuthenticationStatus> sendSMS(@RequestBody Map<String, String> req) {
-        return ResponseEntity.ok(sendMessageService.sendMessage(req.get("phoneNumber")));
+    @PostMapping("/find-id/{user_id}")
+    public ResponseEntity<String> requestFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
+        return ResponseEntity.ok(userService.requestFindId(findUserInfoDto));
+    }
+    @GetMapping("/find-id/{user_id}/confirm")
+    public ResponseEntity<String> verifyFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
+        return ResponseEntity.ok(userService.returnId(findUserInfoDto));
     }
 
-    @PostMapping("/phone-auth") // 핸드폰 인증
-    public ResponseEntity<AuthenticationStatus> verifySMS(@RequestBody Map<String, String> req) {
-        return ResponseEntity.ok(sendMessageService.verifyCode(req.get("phoneNumber"), req.get("code")));
+    @PostMapping("/find-pw/{user_id}")
+    public ResponseEntity<String> requestResetPw(@RequestBody FindUserInfoDto findUserInfoDto) {
+        return ResponseEntity.ok(userService.requestResetPw(findUserInfoDto));
+    }
 
+    @PostMapping("/find-pw/{user_id}/confirm")
+    public ResponseEntity<AuthenticationStatus> verifyResetPw(@RequestBody ResetPwDto resetPwDto) {
+        return ResponseEntity.ok(userService.verifyResetPw(resetPwDto));
     }
 }

@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.user.service;
 
 import com.zerobase.munbanggu.config.auth.TokenProvider;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +22,12 @@ public class AuthService {
                 redisUtil.deleteData(email);
             }
             redisUtil.setData("BLACK:" + tokenProvider.getRawToken(token), "logout", expirationTimeInSeconds);
-
         }
-
     }
 
-
+    public String createVerificationToken(String key, long time){
+        String token = UUID.randomUUID().toString();
+        redisUtil.setData(key, token, time);
+        return token;
+    }
 }

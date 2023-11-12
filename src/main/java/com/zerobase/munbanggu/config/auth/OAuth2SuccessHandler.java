@@ -37,7 +37,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         User user = userRepository.findById(oAuth2User.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        NOT_FOUND_EMAIL.getDescription()));
+                        EMAIL_NOT_EXISTS.getDescription()));
 
         checkUserAuthProvider(user, oAuth2User);
 
