@@ -1,16 +1,16 @@
-package com.zerobase.munbanggu.user.exception;
+package com.zerobase.munbanggu.studyboard.exception;
 
 import com.zerobase.munbanggu.type.ErrorCode;
-import io.jsonwebtoken.JwtException;
 import lombok.Getter;
 
 @Getter
-public class InvalidTokenException extends JwtException {
+public class AlreadyVotedException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public InvalidTokenException(ErrorCode errorCode) {
+    public AlreadyVotedException(ErrorCode errorCode) {
         super(errorCode.getDescription());
         this.errorCode = errorCode;
     }
+
 }

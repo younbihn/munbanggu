@@ -1,15 +1,14 @@
 package com.zerobase.munbanggu.user.exception;
 
 import com.zerobase.munbanggu.type.ErrorCode;
-import io.jsonwebtoken.JwtException;
 import lombok.Getter;
 
 @Getter
-public class InvalidTokenException extends JwtException {
+public class NotFoundUserException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public InvalidTokenException(ErrorCode errorCode) {
+    public NotFoundUserException(ErrorCode errorCode) {
         super(errorCode.getDescription());
         this.errorCode = errorCode;
     }
