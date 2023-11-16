@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .exceptionHandling() .defaultAuthenticationEntryPointFor(unauthorizedHandler, new AntPathRequestMatcher("/api/**"))
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/api/auth/**").permitAll()
+                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**", "/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -54,5 +54,10 @@ public class SecurityConfig {
                 .userInfoEndpoint().userService(customOAuth2UserService);
 
         return http.build();
+    }
+  
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

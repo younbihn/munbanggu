@@ -23,4 +23,14 @@ public class UserExceptionHandler {
     public ResponseEntity<ErrorResponse> userNotFoundException(UserException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
     }
+
+    @ExceptionHandler(NicknameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleNicknameAlreadyExistsException(NicknameAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidNicknameException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidNicknameException(InvalidNicknameException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+    }
 }

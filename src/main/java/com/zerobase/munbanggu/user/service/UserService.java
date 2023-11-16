@@ -17,6 +17,8 @@ import com.zerobase.munbanggu.user.dto.ResetPwDto;
 import com.zerobase.munbanggu.user.dto.SignInDto;
 import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
+import com.zerobase.munbanggu.user.exception.InvalidNicknameException;
+import com.zerobase.munbanggu.user.exception.NicknameAlreadyExistsException;
 import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
@@ -29,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +100,17 @@ public class UserService {
     }
 
     public void registerUser(UserRegisterDto userDto) {
+        // 닉네임 유효성 검사
+        if (!userDto.getNickname().matches("[가-힣a-zA-Z0-9]{2,10}")) {
+            throw new InvalidNicknameException("Invalid nickname format");
+        }
+
+        // 닉네임 중복 확인
+        userRepository.findByNickname(userDto.getNickname())
+                .ifPresent(u -> {
+                    throw new NicknameAlreadyExistsException("Nickname already exists");
+                });
+
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         User user = User.builder()
                 .name(userDto.getName())
@@ -109,6 +124,22 @@ public class UserService {
         userRepository.save(user);
     }
 
+
+    @Transactional
+    public void updateProfileImage(Long userId, String imageUrl) {
+        User siteUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
+        siteUser.setProfileImageUrl(imageUrl);
+        userRepository.save(siteUser);
+    }
+
+    public String getProfileUrl(Long userId) {
+        User siteUser = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+        return siteUser.getProfileImageUrl();
+    }
+      
     /**
      * 이름과 핸드폰 번호가 일치하는 유저 찾기
      * @param name

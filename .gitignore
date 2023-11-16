@@ -39,3 +39,4 @@ out/
 
 application-secret.yml
 application-oauth.yml
+application-s3.yml
