@@ -75,7 +75,6 @@ public class UserService {
                 .orElseThrow(() -> new UserException(USER_NOT_EXIST));
 
         user.setNickname(getUserDto.getNickname());
-        user.setEmail(getUserDto.getEmail());
         user.setPhone(getUserDto.getPhone());
         user.setProfileImageUrl(getUserDto.getProfileImageUrl());
         userRepository.save(user);

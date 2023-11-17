@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.user.controller;
 
 
+
 import com.zerobase.munbanggu.aws.S3Uploader;
 import com.zerobase.munbanggu.config.auth.TokenProvider;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
@@ -35,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/user")
 public class UserController {
     private static final String AUTH_HEADER = "Authorization";
-    private final JwtService jwtService;
+    private final TokenProvider tokenProvider;
     private final UserService userService;
     private final S3Uploader s3Uploader;
     private final TokenProvider tokenProvider;
