@@ -1,7 +1,7 @@
 ## 개요
 변경 사항 및 관련 이슈에 대해 간단하게 작성해주세요
 
-Resolves: #(Isuue Number)
+resolves: #(Isuue Number)
 
 ## PR 유형
 어떤 변경 사항이 있나요?

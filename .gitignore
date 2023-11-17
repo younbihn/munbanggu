@@ -5,8 +5,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-!**/main/resources/application-oauth.yml
-!**/main/resources/application-secret.yml
 
 ### STS ###
 .apt_generated
@@ -40,3 +38,5 @@ out/
 .vscode/
 
 application-secret.yml
+application-oauth.yml
+application-s3.yml

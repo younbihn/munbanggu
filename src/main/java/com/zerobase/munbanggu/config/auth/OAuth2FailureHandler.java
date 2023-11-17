@@ -3,7 +3,7 @@ package com.zerobase.munbanggu.config.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.dto.ErrorResponse;
 import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
-import com.zerobase.munbanggu.user.exception.ErrorCode;
+import com.zerobase.munbanggu.type.ErrorCode;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,8 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
 
             ObjectMapper om = new ObjectMapper();
-            String jsonResponse = om.writeValueAsString(new ErrorResponse(ErrorCode.EMAIL_CONFLICT.getMessage()));
+            String jsonResponse = om.writeValueAsString(
+                    new ErrorResponse(ErrorCode.EMAIL_CONFLICT, ErrorCode.EMAIL_CONFLICT.getDescription()));
 
             response.getWriter().write(jsonResponse);
             response.getWriter().flush();

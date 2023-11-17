@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-mail' // JavaMailSender
     implementation 'org.apache.commons:commons-lang3:3.12.0'  // RandomStringUtils
@@ -43,6 +44,13 @@ dependencies {
 
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.amazonaws:aws-java-sdk-core:1.12.146' // AWS SDK Core 버전을 사용합니다. 버전은 업데이트되어 있을 수 있으므로 최신 버전을 사용하세요.
+    implementation 'com.amazonaws:aws-java-sdk-ec2:1.12.146' // EC2 관련 라이브러리
+
+
+    testImplementation 'junit:junit:4.13.1'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -55,7 +63,7 @@ dependencies {
     }
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    //testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
