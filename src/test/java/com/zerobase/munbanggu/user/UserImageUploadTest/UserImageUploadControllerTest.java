@@ -36,6 +36,9 @@ public class UserImageUploadControllerTest {
     @Mock
     private JwtService jwtService;
 
+    @Mock
+    private TokenProvider tokenProvider;
+
     @InjectMocks
     private UserController userController;
 
