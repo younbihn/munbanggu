@@ -42,9 +42,6 @@ public class UserImageUploadControllerTest {
     @InjectMocks
     private UserController userController;
 
-    @Mock
-    private TokenProvider tokenProvider;
-
     @BeforeEach
     public void setup() {
         userService = Mockito.mock(UserService.class);
