@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.user.UserImageUploadTest;
 
 import com.zerobase.munbanggu.aws.S3Uploader;
+import com.zerobase.munbanggu.config.auth.TokenProvider;
 import com.zerobase.munbanggu.user.controller.UserController;
 import com.zerobase.munbanggu.user.service.UserService;
 import com.zerobase.munbanggu.util.JwtService;
@@ -35,6 +36,9 @@ public class UserImageUploadControllerTest {
     @Mock
     private JwtService jwtService;
 
+    @Mock
+    private TokenProvider tokenProvider;
+
     @InjectMocks
     private UserController userController;
 
@@ -43,7 +47,7 @@ public class UserImageUploadControllerTest {
         userService = Mockito.mock(UserService.class);
         s3Uploader = Mockito.mock(S3Uploader.class);
         jwtService = Mockito.mock(JwtService.class);
-        userController = new UserController(jwtService, userService, s3Uploader);
+        userController = new UserController(jwtService, userService, s3Uploader, tokenProvider);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
