@@ -1,5 +1,7 @@
 package com.zerobase.munbanggu.config.auth;
 
+import static com.zerobase.munbanggu.type.ErrorCode.INVALID_TOKEN;
+
 import com.zerobase.munbanggu.user.exception.InvalidTokenException;
 import com.zerobase.munbanggu.user.type.Role;
 import com.zerobase.munbanggu.util.RedisUtil;
@@ -121,7 +123,7 @@ public class TokenProvider {
 
             return Long.parseLong(claims.get("id").toString());
         } catch (JwtException | NumberFormatException | NullPointerException e) {
-            throw new InvalidTokenException("예외");
+            throw new InvalidTokenException(INVALID_TOKEN);
         }
     }
 
@@ -147,7 +149,7 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(getRawToken(token));
             return true;
         }  catch (Exception e) {
-            throw new InvalidTokenException(e.getMessage());
+            throw new InvalidTokenException(INVALID_TOKEN);
         }
     }
 
