@@ -42,11 +42,15 @@ public class UserImageUploadControllerTest {
     @InjectMocks
     private UserController userController;
 
+    @Mock
+    private TokenProvider tokenProvider;
+
     @BeforeEach
     public void setup() {
         userService = Mockito.mock(UserService.class);
         s3Uploader = Mockito.mock(S3Uploader.class);
         jwtService = Mockito.mock(JwtService.class);
+        tokenProvider = Mockito.mock(TokenProvider.class);
         userController = new UserController(jwtService, userService, s3Uploader, tokenProvider);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
