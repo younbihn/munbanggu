@@ -15,10 +15,7 @@ public enum ErrorCode {
     INVALID_TOKEN("토큰이 유효하지 않습니다."),
     NOT_FOUND_USER_ID("가입되지 않은 회원입니다."),
     INVALID_REQUEST_BODY(""),
-    EMAIL_NOT_EXISTS("가입되지 않은 이메일입니다."),
-    INVALID_EMAIL("이메일이 일치하지 않습니다."),
-    INVALID_CODE("인증번호가 일치하지 않습니다."),
-    INVALID_PHONE("핸드폰번호가 일치하지 않습니다."),
+    EMAIL_NOT_EXIST("가입되지 않은 이메일입니다."),
     UNAUTHORIZED("로그인 후 접근 가능합니다."),
     ALREADY_REGISTERED_NICKNAME("이미 등록된 닉네임입니다."),
     INVALID_NICKNAME_FORMAT("잘못된 닉네임 형식입니다."),
@@ -35,8 +32,8 @@ public enum ErrorCode {
     INVALID_PHONE("핸드폰번호가 일치하지 않습니다"),
 
     //study
-    STUDY_NOT_EXISTS("스터디가 존재하지 않습니다"),
-    CHECKLIST_NOT_EXISTS("일치하는 체크리스트가  존재하지 않습니다"),
+    STUDY_NOT_EXIST("스터디가 존재하지 않습니다"),
+    CHECKLIST_NOT_EXIST("일치하는 체크리스트가  존재하지 않습니다"),
     TOKEN_UNMATCHED("아이디와 토큰정보가 일치하지 않습니다"),
   ;
 

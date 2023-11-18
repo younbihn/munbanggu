@@ -6,10 +6,8 @@ import com.zerobase.munbanggu.study.exception.StudyException;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.user.exception.UserException;
-import com.zerobase.munbanggu.type.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +17,7 @@ public class StudyService {
     
     public Study getStudy(Long id){
         return studyRepository.findById(id)
-            .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXISTS));
+            .orElseThrow(() -> new StudyException(STUDY_NOT_EXIST));
     }
   
     public Study openStudy(StudyDto studyDto) {

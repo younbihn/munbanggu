@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.study.dto;
 
-import com.zerobase.munbanggu.user.type.EnrollmentStatus;
-import com.zerobase.munbanggu.user.type.RefundCycle;
+import com.zerobase.munbanggu.study.type.EnrollmentStatus;
+import com.zerobase.munbanggu.study.type.RefundCycle;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class StudyDto {
 
-    private String userId;
+    private long userId;
 
     private String title;
 

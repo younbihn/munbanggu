@@ -11,7 +11,6 @@ import com.zerobase.munbanggu.user.model.entity.User;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +29,6 @@ class ChecklistServiceTest {
   Long checklistId = 10L;
   Long studyId = 1L;
 
-//  @BeforeEach
   public void setUp() {
     User user = User.builder().email("tmp@naver.com").build();
 
@@ -95,7 +93,7 @@ class ChecklistServiceTest {
     assert (result != null);
 
     Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
     assert(!checklist.getTodo().equals(newTitle));
   }
 
@@ -112,7 +110,7 @@ class ChecklistServiceTest {
   void changeStatus() {
     createChecklistTest();
 
-    Checklist checklist = checklistRepository.findById(checklistId).orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXISTS));
+    Checklist checklist = checklistRepository.findById(checklistId).orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
     System.out.println("\n>> PREV : "+ checklist.isDone());
     checklist.setDone(true);
     checklistRepository.save(checklist);
@@ -124,8 +122,8 @@ class ChecklistServiceTest {
     setUp();
 
     // 참여하고 있는 스터디 아이디
-    List<Study> studyIds = Arrays.asList(studyRepository.findById(1L).orElseThrow(()->new StudyException(ErrorCode.STUDY_NOT_EXISTS))
-        , studyRepository.findById(2L).orElseThrow(()->new StudyException(ErrorCode.STUDY_NOT_EXISTS)));
+    List<Study> studyIds = Arrays.asList(studyRepository.findById(1L).orElseThrow(()->new StudyException(ErrorCode.STUDY_NOT_EXIST))
+        , studyRepository.findById(2L).orElseThrow(()->new StudyException(ErrorCode.STUDY_NOT_EXIST)));
     System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     Map<String, List<Checklist>> missions =
         checklistService.findAllMissions(studyIds);

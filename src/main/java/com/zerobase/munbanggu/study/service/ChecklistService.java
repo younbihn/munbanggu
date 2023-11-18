@@ -24,18 +24,12 @@ public class ChecklistService {
   private ChecklistRepository checklistRepository;
 
   @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
   private StudyRepository studyRepository;
-
-//  @Autowired
-//  private StudyService studyService;
 
   @Transactional
   public String createChecklist(Long userId, Long studyId, String title, AccessType ownerType){
     Study study = studyRepository.findById(studyId)
-        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST));
 
     Checklist checklist = Checklist.builder()
         .user_id(userId)
@@ -52,7 +46,7 @@ public class ChecklistService {
   @Transactional
   public String editChecklist(Long userId, Long checklistId, String title){
     Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
 
     if (checklist != null && userId.equals(checklist.getUser_id())) {
       checklist.setTodo(title);
@@ -67,7 +61,7 @@ public class ChecklistService {
   @Transactional
   public String deleteChecklist(Long userId, Long checklistId){
     Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
 
     if (checklist != null && userId.equals(checklist.getUser_id()))
       checklistRepository.deleteById(checklistId);
@@ -80,7 +74,7 @@ public class ChecklistService {
   @Transactional
   public String changeStatus(Long userId, Long checklistId, boolean status){
     Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
 
     boolean prev = checklist.isDone(); // 초기값
 
@@ -109,7 +103,7 @@ public class ChecklistService {
             // 스터디 아이디로 그룹화
             Collectors.groupingBy(
             checklist -> studyRepository.findById(checklist.getStudy().getId())
-                .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXISTS))
+                .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST))
                 .getTitle(), Collectors.toList()
             )
         );
@@ -119,7 +113,7 @@ public class ChecklistService {
   public List<Checklist> findStudyMissionList(Long studyId, Long userId){
     //스터디에서 사용자와 모임장이 생성한 체크리스트 조회
     Study study = studyRepository.findById(studyId)
-        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXISTS));
+        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST));
 
     List<Checklist> userMissionList =
         checklistRepository.findByUserIdAndAccessType(userId, AccessType.USER);
