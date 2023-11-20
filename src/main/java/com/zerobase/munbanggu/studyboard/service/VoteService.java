@@ -3,7 +3,7 @@ package com.zerobase.munbanggu.studyboard.service;
 import static com.zerobase.munbanggu.type.ErrorCode.ALREADY_VOTED;
 import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_OPTION;
 import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_USER_ID;
-import static com.zerobase.munbanggu.type.ErrorCode.VOTE_NOT_FOUND;
+import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_VOTE;
 
 import com.zerobase.munbanggu.studyboard.exception.AlreadyVotedException;
 import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
@@ -58,7 +58,7 @@ public class VoteService {
     }
 
     private Vote findVote(Long voteId) {
-        return voteRepository.findById(voteId).orElseThrow(() -> new NotFoundPostException(VOTE_NOT_FOUND));
+        return voteRepository.findById(voteId).orElseThrow(() -> new NotFoundPostException(NOT_FOUND_VOTE));
     }
 
     private VoteOption findOption(Long optionId) {

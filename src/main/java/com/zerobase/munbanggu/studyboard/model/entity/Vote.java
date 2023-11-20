@@ -48,10 +48,6 @@ public class Vote {
 
     private LocalDateTime endDate;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
-
     public void addVoteOption(VoteOption option) {
         options.add(option);
         option.setVote(this);
