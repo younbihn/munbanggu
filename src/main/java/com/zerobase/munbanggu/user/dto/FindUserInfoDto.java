@@ -10,5 +10,5 @@ public class FindUserInfoDto {
     private String phone;
     private String token;
     private String inputCode;
-    private String emaill;
+    private String email;
   }

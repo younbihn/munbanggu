@@ -6,6 +6,7 @@ import static com.zerobase.munbanggu.type.ErrorCode.INVALID_EMAIL;
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_PHONE;
 import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
+import static com.zerobase.munbanggu.type.ErrorCode.USER_UNMATCHED;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
@@ -92,11 +93,9 @@ public class UserService {
         else
             throw new UserException(INVALID_EMAIL);
     }
-    public GetUserDto getInfo(String email) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(EMAIL_NOT_EXIST));
-
+    public GetUserDto getInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_EXIST));
         return GetUserDto.builder().
                 email(user.getEmail())
                 .nickname(user.getNickname())
@@ -193,43 +192,69 @@ public class UserService {
 
     /**
      * 아이디 반환
+     * @param userId
      * @param findUserInfoDto - token,name,phone,inputCode
      * @return userEmail
      */
-    public String returnId(FindUserInfoDto findUserInfoDto) {
+    public String returnId(Long userId, FindUserInfoDto findUserInfoDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+
         SmsVerificationInfo info =
             redisUtil.getMsgVerificationInfo(findUserInfoDto.getToken());
 
-        if (info != null && info.getVerificationCode().equals(findUserInfoDto.getInputCode())) {
+        if (user == null || info == null)
+            throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getEmail().equals(info.getEmail()))
+            throw new UserException(USER_UNMATCHED);
+
+        if (info.getVerificationCode().equals(findUserInfoDto.getInputCode())) {
             return findByPhoneAndName(findUserInfoDto.getName(),
                                         findUserInfoDto.getPhone()).getEmail();
-        } else
-            throw new UserException(INVALID_CODE);
+        }
+        throw new UserException(INVALID_CODE);
     }
 
     /**
      * 비밀번호 재설정 요청
+     * @param userId
      * @param findUserInfoDto - email, phone
      * @return uuid(token)
      */
-    public String requestResetPw(FindUserInfoDto findUserInfoDto) {
-        if (findByEmailAndPhone(findUserInfoDto.getEmaill(), findUserInfoDto.getPhone()) != null)
-                return sendMessageService.sendVerificationMessage(findUserInfoDto.getPhone());
-        else
+    public String requestResetPw(Long userId, FindUserInfoDto findUserInfoDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+        User dtoUser = findByEmailAndPhone(findUserInfoDto.getEmail(), findUserInfoDto.getPhone());
+
+        if (user == null || dtoUser == null)
             throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getId().equals(dtoUser.getId()))
+            throw new UserException(USER_UNMATCHED);
+
+        return sendMessageService.sendVerificationMessage(findUserInfoDto.getPhone());
     }
 
     /**
      * 비밀번호 재설정
+     * @param userId
      * @param resetPwDto - token, newPassword, inputCode
      * @return AuthenticationStatus (SUCCESS/FAIL)
      */
-    public AuthenticationStatus verifyResetPw(ResetPwDto resetPwDto) {
+    public AuthenticationStatus verifyResetPw(Long userId, ResetPwDto resetPwDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
         SmsVerificationInfo info = redisUtil.getMsgVerificationInfo(resetPwDto.getToken());
+
+        if (user == null || info == null)
+            throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getEmail().equals(info.getEmail()))
+            throw new UserException(USER_UNMATCHED);
+
         // 핸드폰 인증 번호가 같으면
-        if( info != null && info.getVerificationCode().equals(resetPwDto.getInputCode())) {
-            User user = userRepository.findByEmail(info.getEmail())
-                .orElseThrow(() -> new UserException(EMAIL_NOT_EXIST));
+        if(info.getVerificationCode().equals(resetPwDto.getInputCode())) {
             user.setPassword(resetPwDto.getNewPassword());
             userRepository.save(user);
 

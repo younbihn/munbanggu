@@ -16,6 +16,7 @@ import com.zerobase.munbanggu.user.service.SendMailService;
 import com.zerobase.munbanggu.user.service.SendMessageService;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -75,22 +76,33 @@ public class AuthController {
         return ResponseEntity.ok(sendMessageService.verifyCode(smsVerificationInfo));
     }
 
-    @PostMapping("/find-id/{user_id}")
+    /**
+     * 아이디 찾기 신청 (유저 정보 확인 후, 문자발송)
+     * @param findUserInfoDto -
+     * @return token
+     */
+    @PostMapping("/find-id")
     public ResponseEntity<String> requestFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
         return ResponseEntity.ok(userService.requestFindId(findUserInfoDto));
     }
     @GetMapping("/find-id/{user_id}/confirm")
-    public ResponseEntity<String> verifyFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
-        return ResponseEntity.ok(userService.returnId(findUserInfoDto));
+    public ResponseEntity<String> verifyFindId(
+        @PathVariable("user_id") Long userId,
+        @RequestBody FindUserInfoDto findUserInfoDto) {
+        return ResponseEntity.ok(userService.returnId(userId,findUserInfoDto));
     }
 
     @PostMapping("/find-pw/{user_id}")
-    public ResponseEntity<String> requestResetPw(@RequestBody FindUserInfoDto findUserInfoDto) {
-        return ResponseEntity.ok(userService.requestResetPw(findUserInfoDto));
+    public ResponseEntity<String> requestResetPw(
+        @PathVariable("user_id") Long userId,
+        @RequestBody FindUserInfoDto findUserInfoDto) {
+        return ResponseEntity.ok(userService.requestResetPw(userId,findUserInfoDto));
     }
 
     @PostMapping("/find-pw/{user_id}/confirm")
-    public ResponseEntity<AuthenticationStatus> verifyResetPw(@RequestBody ResetPwDto resetPwDto) {
-        return ResponseEntity.ok(userService.verifyResetPw(resetPwDto));
+    public ResponseEntity<AuthenticationStatus> verifyResetPw(
+        @PathVariable("user_id") Long userId,
+        @RequestBody ResetPwDto resetPwDto) {
+        return ResponseEntity.ok(userService.verifyResetPw(userId,resetPwDto));
     }
 }

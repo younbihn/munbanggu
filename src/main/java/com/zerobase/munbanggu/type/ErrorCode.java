@@ -19,6 +19,7 @@ public enum ErrorCode {
     UNAUTHORIZED("로그인 후 접근 가능합니다."),
     ALREADY_REGISTERED_NICKNAME("이미 등록된 닉네임입니다."),
     INVALID_NICKNAME_FORMAT("잘못된 닉네임 형식입니다."),
+    USER_UNMATCHED("사용자의 정보가 일치하지 않습니다"),
 
     // studyboard
     POST_NOT_FOUND("등록되지 않은 게시글 id 입니다."),
