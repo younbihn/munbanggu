@@ -29,7 +29,7 @@ public enum ErrorCode {
     NOT_FOUND_OPTION("등록되지 않은 투표 항목입니다."),
     ALREADY_VOTED("이미 투표하였습니다."),
     NO_PERMISSION_TO_MODIFY("수정 권한이 없습니다."),
-    NOT_FOUND_COMMENT("등록되지 않은 댓글입니다.");
+    NOT_FOUND_COMMENT("등록되지 않은 댓글입니다."),
 
     //verifiation
     INVALID_EMAIL("이메일이 일치하지 않습니다"),
@@ -38,7 +38,6 @@ public enum ErrorCode {
 
     //study
     NOT_FOUND_STUDY("등록되지 않은 스터디입니다."),
-    STUDY_NOT_EXIST("스터디가 존재하지 않습니다"),
     CHECKLIST_NOT_EXIST("일치하는 체크리스트가  존재하지 않습니다"),
     TOKEN_UNMATCHED("아이디와 토큰정보가 일치하지 않습니다"),
   ;

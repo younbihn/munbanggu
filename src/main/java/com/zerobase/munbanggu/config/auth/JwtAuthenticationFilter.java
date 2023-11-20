@@ -1,5 +1,9 @@
 package com.zerobase.munbanggu.config.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zerobase.munbanggu.dto.ErrorResponse;
+import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.user.exception.InvalidTokenException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,17 +25,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         if (isLoginRequest(request)) {
             filterChain.doFilter(request, response);
             return;
         }
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authorizationHeader != null) {
-            String token = authorizationHeader.replace("Bearer ", "");
-            tokenProvider.validateToken(token);
-            setAuthToSecurityContextHolder(tokenProvider.getRawToken(authorizationHeader));
+        try {
+            if (authorizationHeader != null) {
+                String token = authorizationHeader.replace("Bearer ", "");
+                tokenProvider.validateToken(token);
+                setAuthToSecurityContextHolder(tokenProvider.getRawToken(authorizationHeader));
+            }
+            filterChain.doFilter(request, response);
+        } catch (InvalidTokenException e) {
+            ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_TOKEN, e.getMessage());
+            String jsonErrorResponse = new ObjectMapper().writeValueAsString(errorResponse);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(jsonErrorResponse);
+            response.getWriter().flush();
+            response.getWriter().close();
         }
-        filterChain.doFilter(request, response);
     }
 
     private void setAuthToSecurityContextHolder(String token) {
