@@ -43,11 +43,11 @@ public class ChecklistService {
 
     Checklist checklist = Checklist.builder()
         .user_id(userId)
+        .study_id(studyId)
         .todo(title)
         .done(false)
         .accessType(ownerType)
         .build();
-    checklist.setStudy(study);
 
     studyRepository.save(study);
     Checklist savedChecklist = checklistRepository.save(checklist);
@@ -111,7 +111,7 @@ public class ChecklistService {
         .collect(
             // 스터디 아이디로 그룹화
             Collectors.groupingBy(
-                checklist -> studyRepository.findById(checklist.getStudy().getId())
+                checklist -> studyRepository.findById(checklist.getStudyUser().getId())
                     .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST))
                     .getTitle(), Collectors.toList()
             )

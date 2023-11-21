@@ -34,11 +34,10 @@ public class Checklist {
     private Long id;
 
     @ManyToOne
-    private Study study;
-
-    @ManyToOne
     @JoinColumn(name = "study_user_id")
     private StudyUser studyUser;
+
+    private Long study_id;
 
     private Long user_id;
 
