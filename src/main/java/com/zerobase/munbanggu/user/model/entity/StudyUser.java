@@ -43,7 +43,7 @@ public class StudyUser {
   @Column(name = "certification_date")
   private LocalDateTime latestCertificationDate;
 
-  @OneToMany(mappedBy = "userStudy")
+  @OneToMany(mappedBy = "studyUser")
   private List<Checklist> checklists;
 
 
