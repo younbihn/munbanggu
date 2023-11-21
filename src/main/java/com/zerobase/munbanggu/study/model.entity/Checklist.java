@@ -37,7 +37,8 @@ public class Checklist {
     @JoinColumn(name = "study_user_id")
     private StudyUser studyUser;
 
-    private Long study_id;
+    @ManyToOne
+    private Study study;
 
     private Long user_id;
 
