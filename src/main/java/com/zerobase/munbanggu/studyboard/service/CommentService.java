@@ -14,6 +14,7 @@ import com.zerobase.munbanggu.user.exception.NotFoundUserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -106,8 +107,7 @@ public class CommentService {
 
         if (parent == null) {
             List<Comment> nonDeletedChildren = comment.getChildren().stream()
-                    .filter(c -> !c.isDeleted())
-                    .toList();
+                    .filter(c -> !c.isDeleted()).collect(Collectors.toList());
 
             if (!nonDeletedChildren.isEmpty()) {
                 comment.setDeleted(true);
@@ -115,7 +115,8 @@ public class CommentService {
             }
         } else if (parent.isDeleted() && parent.getChildren().size() > 1) {
             // 삭제 안된 자식 댓글 리스트
-            List<Comment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).toList();
+            List<Comment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).collect(
+                    Collectors.toList());
             // 삭제 안된 자식 댓글들이 있다면!
             if (nonDeletedChildren.size() > 1) {
                 comment.setDeleted(true);
