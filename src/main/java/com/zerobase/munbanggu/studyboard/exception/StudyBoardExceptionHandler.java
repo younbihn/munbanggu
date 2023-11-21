@@ -15,7 +15,17 @@ public class StudyBoardExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> alreadyVotedException(AlreadyVotedException e) {
+    public ResponseEntity<ErrorResponse> alreadyVotedExceptionHandler(AlreadyVotedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> noPermissionExceptionHandler(NoPermissionException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> invalidRequestBodyExceptionHandler(InvalidRequestBodyException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.of(e.getErrorCode(), e.getErrMap()));
     }
 }

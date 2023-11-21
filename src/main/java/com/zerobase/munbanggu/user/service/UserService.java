@@ -1,16 +1,25 @@
 package com.zerobase.munbanggu.user.service;
 
 
+import static com.zerobase.munbanggu.type.ErrorCode.ALREADY_JOINED;
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_CODE;
+import static com.zerobase.munbanggu.type.ErrorCode.INVALID_EMAIL;
 import static com.zerobase.munbanggu.type.ErrorCode.INVALID_PHONE;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_EMAIL;
+import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;
+import static com.zerobase.munbanggu.type.ErrorCode.INVALID_USER_OR_STUDY;
+import static com.zerobase.munbanggu.type.ErrorCode.NOT_PARTICIPATING;
+import static com.zerobase.munbanggu.type.ErrorCode.STUDY_NOT_EXIST;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
+import static com.zerobase.munbanggu.type.ErrorCode.USER_UNMATCHED;
 import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
 import com.zerobase.munbanggu.config.auth.TokenProvider;
 import com.zerobase.munbanggu.dto.TokenResponse;
+import com.zerobase.munbanggu.study.exception.StudyException;
+import com.zerobase.munbanggu.study.model.entity.Study;
+import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.user.dto.FindUserInfoDto;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.ResetPwDto;
@@ -20,10 +29,13 @@ import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.exception.InvalidNicknameException;
 import com.zerobase.munbanggu.user.exception.NicknameAlreadyExistsException;
 import com.zerobase.munbanggu.user.exception.UserException;
+import com.zerobase.munbanggu.user.model.entity.StudyUser;
 import com.zerobase.munbanggu.user.model.entity.User;
+import com.zerobase.munbanggu.user.repository.StudyUserRepository;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import com.zerobase.munbanggu.util.RedisUtil;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +43,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityNotFoundException;
 
 @Service
@@ -42,6 +53,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private StudyRepository studyRepository;
+    @Autowired
+    private StudyUserRepository studyUserRepository;
     private final TokenProvider tokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
     private final RedisUtil redisUtil;
@@ -75,7 +90,6 @@ public class UserService {
                 .orElseThrow(() -> new UserException(USER_NOT_EXIST));
 
         user.setNickname(getUserDto.getNickname());
-        user.setEmail(getUserDto.getEmail());
         user.setPhone(getUserDto.getPhone());
         user.setProfileImageUrl(getUserDto.getProfileImageUrl());
         userRepository.save(user);
@@ -86,11 +100,15 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public GetUserDto getInfo(String email) {
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));
-
+    public User findByIdAndToken(Long tokenId, Long id){
+        if (tokenId.equals(id))
+            return userRepository.findById(id).orElseThrow(() -> new UserException(USER_NOT_EXIST));
+        else
+            throw new UserException(INVALID_EMAIL);
+    }
+    public GetUserDto getInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_EXIST));
         return GetUserDto.builder().
                 email(user.getEmail())
                 .nickname(user.getNickname())
@@ -165,7 +183,7 @@ public class UserService {
      */
     public User findByEmailAndPhone(String email, String phone) {
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));  //이메일이 db에 있는지 확인
+            .orElseThrow(() -> new UserException(EMAIL_NOT_EXIST));  //이메일이 db에 있는지 확인
 
         if (user.getPhone().equals(phone))
             return user;
@@ -187,43 +205,69 @@ public class UserService {
 
     /**
      * 아이디 반환
+     * @param userId
      * @param findUserInfoDto - token,name,phone,inputCode
      * @return userEmail
      */
-    public String returnId(FindUserInfoDto findUserInfoDto) {
+    public String returnId(Long userId, FindUserInfoDto findUserInfoDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+
         SmsVerificationInfo info =
             redisUtil.getMsgVerificationInfo(findUserInfoDto.getToken());
 
-        if (info != null && info.getVerificationCode().equals(findUserInfoDto.getInputCode())) {
+        if (user == null || info == null)
+            throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getEmail().equals(info.getEmail()))
+            throw new UserException(USER_UNMATCHED);
+
+        if (info.getVerificationCode().equals(findUserInfoDto.getInputCode())) {
             return findByPhoneAndName(findUserInfoDto.getName(),
                                         findUserInfoDto.getPhone()).getEmail();
-        } else
-            throw new UserException(INVALID_CODE);
+        }
+        throw new UserException(INVALID_CODE);
     }
 
     /**
      * 비밀번호 재설정 요청
+     * @param userId
      * @param findUserInfoDto - email, phone
      * @return uuid(token)
      */
-    public String requestResetPw(FindUserInfoDto findUserInfoDto) {
-        if (findByEmailAndPhone(findUserInfoDto.getEmaill(), findUserInfoDto.getPhone()) != null)
-                return sendMessageService.sendVerificationMessage(findUserInfoDto.getPhone());
-        else
+    public String requestResetPw(Long userId, FindUserInfoDto findUserInfoDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+        User dtoUser = findByEmailAndPhone(findUserInfoDto.getEmail(), findUserInfoDto.getPhone());
+
+        if (user == null || dtoUser == null)
             throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getId().equals(dtoUser.getId()))
+            throw new UserException(USER_UNMATCHED);
+
+        return sendMessageService.sendVerificationMessage(findUserInfoDto.getPhone());
     }
 
     /**
      * 비밀번호 재설정
+     * @param userId
      * @param resetPwDto - token, newPassword, inputCode
      * @return AuthenticationStatus (SUCCESS/FAIL)
      */
-    public AuthenticationStatus verifyResetPw(ResetPwDto resetPwDto) {
+    public AuthenticationStatus verifyResetPw(Long userId, ResetPwDto resetPwDto) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
         SmsVerificationInfo info = redisUtil.getMsgVerificationInfo(resetPwDto.getToken());
+
+        if (user == null || info == null)
+            throw new UserException(USER_NOT_EXIST);
+
+        if (!user.getEmail().equals(info.getEmail()))
+            throw new UserException(USER_UNMATCHED);
+
         // 핸드폰 인증 번호가 같으면
-        if( info != null && info.getVerificationCode().equals(resetPwDto.getInputCode())) {
-            User user = userRepository.findByEmail(info.getEmail())
-                .orElseThrow(() -> new UserException(NOT_FOUND_EMAIL));
+        if(info.getVerificationCode().equals(resetPwDto.getInputCode())) {
             user.setPassword(resetPwDto.getNewPassword());
             userRepository.save(user);
 
@@ -233,5 +277,60 @@ public class UserService {
         }
         else
             return AuthenticationStatus.FAIL;
+    }
+
+    public String joinStudy(Long userId, Long studyId,String password){
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+
+        Study study = studyRepository.findById(studyId)
+            .orElseThrow(() -> new StudyException(STUDY_NOT_EXIST));
+
+        if (user != null && study != null){
+            //private 인데 비밀번호 일치x
+            if (!passwordEncoder.matches(password, study.getPassword()) &&
+            !study.isPublic_or_not()) {
+                throw new UserException(WRONG_PASSWORD);
+            }
+
+            //이미 가입한 유저
+            for (StudyUser studyList : studyUserRepository.findByUser(user)) {
+                if (studyList.getStudy().equals(study)) {
+                    throw new StudyException(ALREADY_JOINED);
+                }
+            }
+
+            // 모임 참여
+            StudyUser studyUser = new StudyUser(user,study, LocalDateTime.now());
+            studyUserRepository.save(studyUser);
+            return "Joined the study successfully";
+        }
+        throw new StudyException(INVALID_USER_OR_STUDY);
+    }
+
+    private String deleteStudyUser(StudyUser studyUser) {
+        studyUserRepository.delete(studyUser);
+        return studyUser.getUser().getEmail()+
+            ", " + studyUser.getStudy().getTitle() +" has been deleted";
+    }
+
+    public String withdrawStudy(Long userId, Long studyId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+
+        Study study = studyRepository.findById(studyId)
+            .orElseThrow(() -> new StudyException(STUDY_NOT_EXIST));
+
+        if (user != null && study != null) {
+
+            // 회원이 스터디에 참여중이면 삭제
+            for (StudyUser studyList : studyUserRepository.findByUser(user)) {
+                if (studyList.getStudy().equals(study)) {
+                    return deleteStudyUser(studyList);
+                }
+            }
+            throw new StudyException(NOT_PARTICIPATING);
+        }
+        throw new StudyException(INVALID_USER_OR_STUDY);
     }
 }

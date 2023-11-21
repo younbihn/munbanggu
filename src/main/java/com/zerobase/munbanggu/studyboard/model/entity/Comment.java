@@ -1,22 +1,19 @@
 package com.zerobase.munbanggu.studyboard.model.entity;
 
-import com.zerobase.munbanggu.study.model.entity.Study;
-import com.zerobase.munbanggu.studyboard.type.Type;
 import com.zerobase.munbanggu.user.model.entity.User;
 import java.time.LocalDateTime;
-import javax.persistence.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,25 +24,22 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudyBoardPost {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Type type;
-
-    private String title;
-
+    @Column(nullable = false, length = 1000)
     private String content;
+
+    private boolean isDeleted;
 
     @CreatedDate
     private LocalDateTime createdDate;
@@ -53,14 +47,23 @@ public class StudyBoardPost {
     @LastModifiedDate
     private LocalDateTime updatedDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_board_post_id")
+    private StudyBoardPost studyBoardPost;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "studyBoardPost", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Vote vote;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
 
-    @ManyToOne
-    @JoinColumn(name = "study_id")
-    private Study study;
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
+
+    public void updateParent(Comment comment) {
+        this.parent = comment;
+    }
+
 }

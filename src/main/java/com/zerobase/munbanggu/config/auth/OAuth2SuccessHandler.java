@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.config.auth;
 
 import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_CONFLICT;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_EMAIL;
+import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.dto.TokenResponse;
@@ -40,7 +40,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         User user = userRepository.findById(oAuth2User.getUser().getId())
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        NOT_FOUND_EMAIL.getDescription()));
+                        EMAIL_NOT_EXIST.getDescription()));
 
         checkUserAuthProvider(user, oAuth2User);
 

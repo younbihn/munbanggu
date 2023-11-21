@@ -1,9 +1,8 @@
-package com.zerobase.munbanggu.user.model.entity;
+package com.zerobase.munbanggu.study.model.entity;
 
-import com.zerobase.munbanggu.user.type.AuthProvider;
-import com.zerobase.munbanggu.user.type.Role;
+import com.zerobase.munbanggu.study.type.EnrollmentStatus;
+import com.zerobase.munbanggu.study.type.RefundCycle;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -11,8 +10,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,44 +26,52 @@ import reactor.util.annotation.Nullable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@Table(name="\"user\"")
-public class User {
+public class Study {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
-    @Column(unique = true)
-    private String email;
+    private Long user_id;
 
-    private String name;
+    private String title;
 
+    private String content;
+
+    private long min_user;
+
+    private long max_user;
+
+    private boolean public_or_not;
+
+    @Nullable
     private String password;
 
-    private String nickname;
+    private LocalDateTime start_date;
+
+    private LocalDateTime end_date;
+
+    @Nullable
+    private boolean start_rule;
+
+    @Nullable
+    private boolean start_attend_or_not;
+
+    private long checklist_cycle;
+
+    private long fee;
 
     @Enumerated(EnumType.STRING)
     @Nullable
-    private AuthProvider authProvider;
+    private RefundCycle refundCycle;
 
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Role role = Role.USER;
-
-    private String phone;
-
-    private String profileImageUrl;
-
-    @Builder.Default
-    private int failedCount = 0;
+    private EnrollmentStatus status;
 
     @CreatedDate
-    private LocalDateTime createdDate;
-  
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
+    private LocalDateTime create_date;
 
-    private LocalDateTime deleteDate;
+    @Nullable
+    private LocalDateTime delete_date;
+
 }

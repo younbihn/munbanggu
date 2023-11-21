@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class UserServiceTest {
   private final String email = "kim@naver.com";
-
+  private final Long userId = 11L;
   @Autowired
   UserService userService;
   @Autowired
@@ -30,6 +30,7 @@ class UserServiceTest {
     System.out.println("\nSAVING--");
 
     User user = new User();
+    user.setId(userId);
     user.setEmail(email);
     user.setNickname("KIM");
     user.setName("GILDONG");
@@ -40,7 +41,7 @@ class UserServiceTest {
 
   @Test
   public void getInfoTest(){
-    assert (userService.getInfo(email).getEmail().equals(email));
+    assert (userService.getInfo(userId).getEmail().equals(email));
   }
 
   @Test
@@ -56,7 +57,7 @@ class UserServiceTest {
     findUserInfoDto.setName(user.getName());
     findUserInfoDto.setPhone(user.getPhone());
 
-    System.out.println("\n>>>>>>>>>>> "+ findUserInfoDto.getEmaill() + " " +findUserInfoDto.getPhone());
+    System.out.println("\n>>>>>>>>>>> "+ findUserInfoDto.getEmail() + " " +findUserInfoDto.getPhone());
 
     String token = userService.requestFindId(findUserInfoDto);
     System.out.println("\n>>>>>>>>>>> token"+ token);
@@ -75,6 +76,7 @@ class UserServiceTest {
   @Test
   public void resetPwTest(){
     User user = new User();
+    user.setId(11L);
     user.setEmail(email);
     user.setNickname("KIM");
     user.setName("GILDONG");
@@ -86,7 +88,7 @@ class UserServiceTest {
     findUserInfoDto.setName("GILDONG");
     findUserInfoDto.setPhone("010-1111-1111");
 
-    String token = userService.requestResetPw(findUserInfoDto);
+    String token = userService.requestResetPw(user.getId(), findUserInfoDto);
 
     String input = "1234";  // 핸드폰 인증코드
     SmsVerificationInfo smsVerificationInfo = new SmsVerificationInfo();
@@ -103,7 +105,7 @@ class UserServiceTest {
     resetPwDto.setInputCode("1234");
     resetPwDto.setToken("abc123");
 
-    assert(userService.verifyResetPw(resetPwDto).equals(AuthenticationStatus.SUCCESS));
+    assert(userService.verifyResetPw(user.getId(), resetPwDto).equals(AuthenticationStatus.SUCCESS));
 
   }
 }

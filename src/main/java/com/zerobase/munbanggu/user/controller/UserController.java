@@ -1,30 +1,17 @@
 package com.zerobase.munbanggu.user.controller;
 
-
 import com.zerobase.munbanggu.aws.S3Uploader;
 import com.zerobase.munbanggu.config.auth.TokenProvider;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.model.entity.User;
+import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.service.UserService;
-import com.zerobase.munbanggu.util.JwtService;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -35,10 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/user")
 public class UserController {
     private static final String AUTH_HEADER = "Authorization";
-    private final JwtService jwtService;
+    private final TokenProvider tokenProvider;
     private final UserService userService;
     private final S3Uploader s3Uploader;
-    private final TokenProvider tokenProvider;
+
 
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUser( @RequestHeader(name = AUTH_HEADER) String token,
@@ -60,8 +47,8 @@ public class UserController {
     }
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<GetUserDto> getUserInfo(@RequestBody Map<String,String> req){
-        return ResponseEntity.ok(userService.getInfo(req.get("email")));
+    public ResponseEntity<GetUserDto> getUserInfo(@PathVariable("user_id")Long userId){
+        return ResponseEntity.ok(userService.getInfo(userId));
     }
 
     @Transactional(isolation=Isolation.SERIALIZABLE)
@@ -92,4 +79,20 @@ public class UserController {
             return new ResponseEntity<>("Failed to upload image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // 스터디 신청
+    @PostMapping("/{user_id}/study/{study_id}")
+    public ResponseEntity<String> joinStudy(
+        @PathVariable("user_id") Long userId, @PathVariable("study_id") Long studyId,
+        @RequestParam(required = false) String password){
+        return ResponseEntity.ok(userService.joinStudy(userId,studyId,password));
+    }
+
+    // 스터디 탈퇴
+    @DeleteMapping("/{user_id}/study/{study_id}")
+    public ResponseEntity<String> withdrawStudy(
+        @PathVariable("user_id") Long userId, @PathVariable("study_id") Long studyId){
+        return ResponseEntity.ok(userService.withdrawStudy(userId,studyId));
+    }
+
 }

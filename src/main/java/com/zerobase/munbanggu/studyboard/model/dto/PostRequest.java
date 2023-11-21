@@ -25,9 +25,6 @@ public class PostRequest {
     @NotNull(message = "게시글 내용은 필수 입력 사항입니다.")
     private String content;
 
-    @NotNull(message = "user id는 필수 입력 사항입니다.")
-    private Long userId;
-
     @Valid
     private VoteRequest vote;
 }

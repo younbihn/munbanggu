@@ -125,7 +125,7 @@ public class SendMailService {
 
         // 회원이 아니면 오류 반환
         userRepository.findByEmail(mailVerificationDto.getEmail())
-            .orElseThrow(() -> new UserException(ErrorCode.EMAIL_NOT_EXISTS));
+            .orElseThrow(() -> new UserException(ErrorCode.EMAIL_NOT_EXIST));
 
         // redis에서 정보삭제
         redisUtil.deleteData(mailVerificationDto.getEmail());
