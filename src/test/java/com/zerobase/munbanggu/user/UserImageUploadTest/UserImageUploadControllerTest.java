@@ -42,23 +42,21 @@ public class UserImageUploadControllerTest {
     @InjectMocks
     private UserController userController;
 
-    @Mock
-    private TokenProvider tokenProvider;
-
     @BeforeEach
     public void setup() {
         userService = Mockito.mock(UserService.class);
         s3Uploader = Mockito.mock(S3Uploader.class);
         jwtService = Mockito.mock(JwtService.class);
         tokenProvider = Mockito.mock(TokenProvider.class);
-        userController = new UserController(jwtService, userService, s3Uploader, tokenProvider);
+        userController = new UserController(tokenProvider, userService, s3Uploader);
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
 
 
     @Test
     public void testUploadOrUpdateProfileImage_Success() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("imageFile", "filename.jpg", "image/jpeg", "some-image".getBytes());
+        MockMultipartFile file = new MockMultipartFile("imageFile", "filename.jpg", "image/jpeg",
+                "some-image".getBytes());
         Long userId = 1L;
         String newImageUrl = "http://newimage.url";
 
@@ -72,7 +70,8 @@ public class UserImageUploadControllerTest {
 
     @Test
     public void testUploadOrUpdateProfileImage_Failure() throws Exception {
-        MockMultipartFile file = new MockMultipartFile("imageFile", "filename.jpg", "image/jpeg", "some-image".getBytes());
+        MockMultipartFile file = new MockMultipartFile("imageFile", "filename.jpg", "image/jpeg",
+                "some-image".getBytes());
         Long userId = 1L;
 
         when(s3Uploader.uploadFile(file)).thenThrow(new IOException());
