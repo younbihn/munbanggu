@@ -98,4 +98,24 @@ public class StudyController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+    @PostMapping("/{studyId}/members")
+    public ResponseEntity<String> addMemberToStudy(@PathVariable Long studyId,
+            @RequestParam Long userId,
+            @RequestHeader(name = "Authorization") String token) {
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 존재하지 않음");
+        }
+
+        Optional<User> user = userService.getUser(tokenProvider.getId(token));
+        if (user.isPresent()) {
+            studyService.addMemberToStudy(studyId, userId);
+            return ResponseEntity.ok("스터디에 사용자가 추가되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
+        }
+    }
+
+
 }

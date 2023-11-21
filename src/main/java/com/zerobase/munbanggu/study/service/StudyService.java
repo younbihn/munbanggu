@@ -1,11 +1,16 @@
 package com.zerobase.munbanggu.study.service;
 
 import static com.zerobase.munbanggu.type.ErrorCode.STUDY_NOT_EXIST;
+import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
 import com.zerobase.munbanggu.study.dto.StudyDto;
 import com.zerobase.munbanggu.study.exception.StudyException;
 import com.zerobase.munbanggu.study.model.entity.Study;
+import com.zerobase.munbanggu.study.model.entity.StudyMember;
+import com.zerobase.munbanggu.study.repository.StudyMemberRepository;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.user.exception.UserException;
+import com.zerobase.munbanggu.user.model.entity.User;
+import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,12 +19,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor  
 public class StudyService {
     private final StudyRepository studyRepository;
+
+
+    private final UserRepository userRepository;
+    private final StudyMemberRepository studyMemberRepository;
+
+
     
     public Study getStudy(Long id){
         return studyRepository.findById(id)
             .orElseThrow(() -> new StudyException(STUDY_NOT_EXIST));
     }
   
+
     public Study openStudy(StudyDto studyDto) {
         Study newStudy = convertToEntity(studyDto);
         return studyRepository.save(newStudy);
@@ -89,6 +101,23 @@ public class StudyService {
     public Study getStudyDetails(Long id) {
         return studyRepository.findById(id).orElse(null);
     }
+
+
+    public void addMemberToStudy(Long studyId, Long userId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new UserException(STUDY_NOT_EXIST));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_EXIST));
+
+        StudyMember studyMember = StudyMember.builder()
+                .study(study)
+                .user(user)
+                .build();
+
+        // 스터디원 추가
+        studyMemberRepository.save(studyMember);
+    }
   
     /**
      * 사용자가 참여하고있는 스터디의 ID 목록을 조회
@@ -97,5 +126,6 @@ public class StudyService {
      */
     public List<Study> findStudiesByUserId(Long userId) {
       return studyRepository.findStudyIdByUserId(userId);
+
     }
 }

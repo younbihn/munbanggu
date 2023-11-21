@@ -47,5 +47,6 @@ public enum ErrorCode {
 
     ;
 
+
     private final String description;
 }

@@ -26,6 +26,7 @@ public class UserController {
     private final UserService userService;
     private final S3Uploader s3Uploader;
 
+
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUser( @RequestHeader(name = AUTH_HEADER) String token,
             @RequestBody GetUserDto getUserDto){
