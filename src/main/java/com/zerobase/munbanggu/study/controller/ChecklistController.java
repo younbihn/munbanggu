@@ -214,4 +214,25 @@ public class ChecklistController {
       else
         return ResponseEntity.ok(Collections.emptyList());
     }
+
+  /**
+   * 스터디의 미션 달성도 확인
+   * @param studyId
+   * @return 스터디원 전체 미션 달성도
+   */
+  @GetMapping("/{study_id}/participation")
+  public ResponseEntity<Double> checkStudyProgress(@PathVariable ("study_id") Long studyId ){
+    return ResponseEntity.ok(checkListService.getStudyParticipationRate(studyId));
+  }
+
+  /**
+   * 유저 개인의 미션 달성도를 확인
+   * @param studyId
+   * @param userId
+   * @return 멤버 개인의 달성도
+   */
+  @GetMapping("/{study_id}/participation/{user_id}")
+  public ResponseEntity<Double> checkUserProgress(@PathVariable ("study_id") Long studyId , @PathVariable ("user_id") Long userId ){
+    return ResponseEntity.ok(checkListService.getParticipationRate(studyId, userId));
+  }
 }
