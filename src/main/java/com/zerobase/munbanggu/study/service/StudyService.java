@@ -33,7 +33,16 @@ public class StudyService {
   
 
     public Study openStudy(StudyDto studyDto) {
+
+    public Study openStudy(StudyDto studyDto, User user) {
         Study newStudy = convertToEntity(studyDto);
+        Study study = studyRepository.save(newStudy);
+        StudyMember studyMember = StudyMember.builder()
+                .study(study)
+                .user(user)
+                .build();
+        studyMemberRepository.save(studyMember);
+
         return studyRepository.save(newStudy);
     }
   
