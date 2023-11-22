@@ -4,7 +4,7 @@ import com.zerobase.munbanggu.aws.S3Uploader;
 import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.user.controller.UserController;
 import com.zerobase.munbanggu.user.service.UserService;
-import com.zerobase.munbanggu.util.JwtService;
+import com.zerobase.munbanggu.common.util.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

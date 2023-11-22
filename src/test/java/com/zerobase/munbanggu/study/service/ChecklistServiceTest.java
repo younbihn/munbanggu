@@ -6,7 +6,7 @@ import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.ChecklistRepository;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.study.type.AccessType;
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.model.entity.User;
 import java.util.Arrays;
 import java.util.List;
