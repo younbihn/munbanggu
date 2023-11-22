@@ -1,13 +1,13 @@
 package com.zerobase.munbanggu.user.service;
-import static com.zerobase.munbanggu.type.RedisTime.MAIL_VALID;
+import static com.zerobase.munbanggu.common.type.RedisTime.MAIL_VALID;
 
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.dto.MailDto;
 import com.zerobase.munbanggu.user.dto.MailVerificationDto;
 import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
-import com.zerobase.munbanggu.util.RedisUtil;
+import com.zerobase.munbanggu.common.util.RedisUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;

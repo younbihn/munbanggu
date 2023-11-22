@@ -17,7 +17,7 @@ import com.zerobase.munbanggu.studyboard.model.entity.VoteOption;
 import com.zerobase.munbanggu.studyboard.repository.StudyBoardPostRepository;
 import com.zerobase.munbanggu.studyboard.repository.VoteRepository;
 import com.zerobase.munbanggu.studyboard.type.Type;
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.exception.NotFoundUserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;

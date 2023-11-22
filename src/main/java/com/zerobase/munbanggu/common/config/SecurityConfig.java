@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config;
+package com.zerobase.munbanggu.common.config;
 
 import com.zerobase.munbanggu.auth.CustomOAuth2UserService;
 import com.zerobase.munbanggu.auth.JwtAuthenticationEntryPoint;

@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.dto;
+package com.zerobase.munbanggu.common.dto;
 
 import java.util.List;
 import lombok.Builder;

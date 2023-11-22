@@ -1,22 +1,22 @@
 package com.zerobase.munbanggu.user.service;
 
 
-import static com.zerobase.munbanggu.type.ErrorCode.ALREADY_JOINED;
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_CODE;
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_EMAIL;
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_PHONE;
-import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_USER_OR_STUDY;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_PARTICIPATING;
-import static com.zerobase.munbanggu.type.ErrorCode.STUDY_NOT_EXIST;
-import static com.zerobase.munbanggu.type.ErrorCode.USER_NOT_EXIST;
-import static com.zerobase.munbanggu.type.ErrorCode.USER_UNMATCHED;
-import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
-import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
+import static com.zerobase.munbanggu.common.type.ErrorCode.ALREADY_JOINED;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_CODE;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_EMAIL;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_PHONE;
+import static com.zerobase.munbanggu.common.type.ErrorCode.EMAIL_NOT_EXIST;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_USER_OR_STUDY;
+import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_PARTICIPATING;
+import static com.zerobase.munbanggu.common.type.ErrorCode.STUDY_NOT_EXIST;
+import static com.zerobase.munbanggu.common.type.ErrorCode.USER_NOT_EXIST;
+import static com.zerobase.munbanggu.common.type.ErrorCode.USER_UNMATCHED;
+import static com.zerobase.munbanggu.common.type.ErrorCode.USER_WITHDRAWN;
+import static com.zerobase.munbanggu.common.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
 import com.zerobase.munbanggu.auth.TokenProvider;
-import com.zerobase.munbanggu.dto.TokenResponse;
+import com.zerobase.munbanggu.common.dto.TokenResponse;
 import com.zerobase.munbanggu.study.exception.StudyException;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
@@ -34,7 +34,7 @@ import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.StudyUserRepository;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
-import com.zerobase.munbanggu.util.RedisUtil;
+import com.zerobase.munbanggu.common.util.RedisUtil;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

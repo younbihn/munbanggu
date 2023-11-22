@@ -1,6 +1,6 @@
-package com.zerobase.munbanggu.dto;
+package com.zerobase.munbanggu.common.dto;
 
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

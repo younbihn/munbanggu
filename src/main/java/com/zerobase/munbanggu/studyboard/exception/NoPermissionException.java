@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.studyboard.exception;
 
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import lombok.Getter;
 
 @Getter

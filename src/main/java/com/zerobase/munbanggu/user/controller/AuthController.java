@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.user.controller;
 
 
-import com.zerobase.munbanggu.dto.TokenResponse;
+import com.zerobase.munbanggu.common.dto.TokenResponse;
 import com.zerobase.munbanggu.user.dto.FindUserInfoDto;
 import com.zerobase.munbanggu.user.dto.MailVerificationDto;
 import com.zerobase.munbanggu.user.dto.ResetPwDto;
@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import com.zerobase.munbanggu.user.dto.SignInDto;
 import com.zerobase.munbanggu.user.service.UserService;
-import com.zerobase.munbanggu.util.JwtService;
+import com.zerobase.munbanggu.common.util.JwtService;
 import com.zerobase.munbanggu.user.service.SendMailService;
 import com.zerobase.munbanggu.user.service.SendMessageService;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
