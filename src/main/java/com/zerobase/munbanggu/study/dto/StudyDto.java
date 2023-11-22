@@ -1,5 +1,6 @@
 package com.zerobase.munbanggu.study.dto;
 
+import com.zerobase.munbanggu.study.type.ChecklistCycle;
 import com.zerobase.munbanggu.study.type.EnrollmentStatus;
 import com.zerobase.munbanggu.study.type.RefundCycle;
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class StudyDto {
 
     private boolean startAttendOrNot;
 
-    private long checklistCycle;
+    private ChecklistCycle checklistCycle;
 
     private long fee;
 

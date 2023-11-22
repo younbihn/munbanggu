@@ -39,18 +39,15 @@ public class StudyUser {
   @JoinColumn(name = "study_id")
   private Study study;
 
-  @CreatedDate
-  @Column(name = "certification_date")
-  private LocalDateTime latestCertificationDate;
-
   @OneToMany(mappedBy = "studyUser")
   private List<Checklist> checklists;
 
+  private double participationRate;
 
-  public StudyUser(User user,Study study, LocalDateTime latestCertificationDate){
+  public StudyUser(User user,Study study){
     this.user = user;
     this.study = study;
-    this.latestCertificationDate = latestCertificationDate;
     this.checklists = new ArrayList<>(); // Checklist 초기화
+    this.participationRate =  0.0;
   }
 }

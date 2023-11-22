@@ -301,7 +301,7 @@ public class UserService {
             }
 
             // 모임 참여
-            StudyUser studyUser = new StudyUser(user,study, LocalDateTime.now());
+            StudyUser studyUser = new StudyUser(user,study);
             studyUserRepository.save(studyUser);
             return "Joined the study successfully";
         }
