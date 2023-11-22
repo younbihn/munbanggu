@@ -181,7 +181,7 @@ public class ChecklistService {
   @Scheduled(cron = "0 0 0 * * ?")  //매일 자정에 실행
   public String updateParticipationRate(StudyUser studyUser, Study study) {
     ChecklistCycle cycle = study.getChecklist_cycle();
-    LocalDateTime lastCertificationDate = study.getLatest_certification_date();
+    LocalDateTime lastCertificationDate = study.getLatest_refund_date();
 
     int interval = cycle.isDaily() ? 1 : 7 ;
     return updateRate(studyUser,lastCertificationDate,interval);
@@ -192,10 +192,10 @@ public class ChecklistService {
 
     if (daysBetween >= interval) {
       double participationRate = calculateParticipationRate(studyUser.getChecklists(),
-                  studyUser.getStudy().getLatest_certification_date().plusDays(interval).toLocalDate());
+                  studyUser.getStudy().getLatest_refund_date().plusDays(interval).toLocalDate());
 
       studyUser.setParticipationRate(participationRate);
-      studyUser.getStudy().setLatest_certification_date(LocalDateTime.now());
+      studyUser.getStudy().setLatest_refund_date(LocalDateTime.now());
       studyUserRepository.save(studyUser);
       return "참여도 갱신 완료";
     }

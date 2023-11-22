@@ -58,21 +58,21 @@ public class Study {
     @Nullable
     private boolean start_attend_or_not;
 
-    private long fee;
-
     @Enumerated(EnumType.STRING)
     @Nullable
     private ChecklistCycle checklist_cycle;
+
+    private long fee;
 
     @Enumerated(EnumType.STRING)
     @Nullable
     private RefundCycle refundCycle;
 
+    @CreatedDate
+    private LocalDateTime latest_refund_date;
+
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
-
-    @CreatedDate
-    private LocalDateTime latest_certification_date;
 
     @CreatedDate
     private LocalDateTime create_date;

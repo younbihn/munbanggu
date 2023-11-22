@@ -1,5 +1,6 @@
 package com.zerobase.munbanggu.point.model;
 
+import com.zerobase.munbanggu.point.type.UsageType;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.user.model.entity.User;
 import java.time.LocalDateTime;
@@ -17,7 +18,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -35,15 +35,19 @@ public class Point {
     @ManyToOne
     @JoinColumn(name = "study_id")
     private Study study;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
     @NotNull
-    private String type;
+    private UsageType type;
 
     private Long amount;
+
     private Long balance;
+
     @CreatedDate
-    private LocalDateTime created_date;
+    private LocalDateTime createdDate;
 
 }

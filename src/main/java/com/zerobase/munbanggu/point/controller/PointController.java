@@ -1,20 +1,16 @@
-//package com.zerobase.munbanggu.point.controller;
-//
-//
-//import static org.hibernate.id.enhanced.StandardOptimizerDescriptor.log;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.ModelAttribute;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.ResponseBody;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController
-//@RequestMapping("/api/pint/user")
-//@RequiredArgsConstructor
-//public class PointController {
+package com.zerobase.munbanggu.point.controller;
+
+import com.zerobase.munbanggu.point.service.PointService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/point")
+@RequiredArgsConstructor
+public class PointController {
+    private final PointService pointService;
+
 //    // 카카오페이결제 요청
 //    @GetMapping("/order/pay")
 //    public @ResponseBody ReadyResponse payReady(@RequestParam(name = "total_amount") int totalAmount, Order order, Model model) {
@@ -67,4 +63,11 @@
 //    public String payFail() {
 //        return "redirect:/carts";
 //    }
-//}
+
+    @PostMapping("/study/{study_id}/user/{user_id}")
+    public ResponseEntity<String> refund(
+        @PathVariable("study_id")Long studyId,@PathVariable("user_id")Long userId){
+
+      return ResponseEntity.ok(pointService.getUserRefund(userId, studyId));
+    }
+}
