@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.studyboard.service;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.studyboard.exception.NoPermissionException;
 import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;

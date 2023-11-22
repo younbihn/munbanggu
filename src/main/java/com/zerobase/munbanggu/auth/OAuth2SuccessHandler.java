@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config.auth;
+package com.zerobase.munbanggu.auth;
 
 import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_CONFLICT;
 import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;

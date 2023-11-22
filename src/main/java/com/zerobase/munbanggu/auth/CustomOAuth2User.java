@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config.auth;
+package com.zerobase.munbanggu.auth;
 
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.type.AuthProvider;

@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.study.controller;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.study.dto.StudyDto;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.service.StudyService;

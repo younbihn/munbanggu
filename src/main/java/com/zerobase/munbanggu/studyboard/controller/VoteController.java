@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.studyboard.controller;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.studyboard.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

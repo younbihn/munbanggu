@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config.auth;
+package com.zerobase.munbanggu.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;

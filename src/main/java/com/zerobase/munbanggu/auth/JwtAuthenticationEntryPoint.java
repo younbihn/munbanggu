@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config.auth;
+package com.zerobase.munbanggu.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.dto.ErrorResponse;

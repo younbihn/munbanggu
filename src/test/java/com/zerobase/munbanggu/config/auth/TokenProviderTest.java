@@ -1,5 +1,7 @@
 package com.zerobase.munbanggu.config.auth;
 
+import com.zerobase.munbanggu.auth.CustomOAuth2User;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.type.AuthProvider;
 import com.zerobase.munbanggu.user.type.Role;

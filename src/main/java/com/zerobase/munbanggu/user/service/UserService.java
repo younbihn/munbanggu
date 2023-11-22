@@ -15,7 +15,7 @@ import static com.zerobase.munbanggu.type.ErrorCode.USER_WITHDRAWN;
 import static com.zerobase.munbanggu.type.ErrorCode.WRONG_PASSWORD;
 import static com.zerobase.munbanggu.user.type.Role.INACTIVE;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.dto.TokenResponse;
 import com.zerobase.munbanggu.study.exception.StudyException;
 import com.zerobase.munbanggu.study.model.entity.Study;

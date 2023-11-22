@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.studyboard.service;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.study.exception.NotFoundStudyException;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
