@@ -1,14 +1,14 @@
-package com.zerobase.munbanggu.config.auth;
+package com.zerobase.munbanggu.auth;
 
-import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_CONFLICT;
-import static com.zerobase.munbanggu.type.ErrorCode.EMAIL_NOT_EXIST;
+import static com.zerobase.munbanggu.common.type.ErrorCode.EMAIL_CONFLICT;
+import static com.zerobase.munbanggu.common.type.ErrorCode.EMAIL_NOT_EXIST;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zerobase.munbanggu.dto.TokenResponse;
+import com.zerobase.munbanggu.common.dto.TokenResponse;
 import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.util.RedisUtil;
+import com.zerobase.munbanggu.common.util.RedisUtil;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

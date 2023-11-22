@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.user.UserImageUploadTest;
 
 import com.zerobase.munbanggu.aws.S3Uploader;
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.user.controller.UserController;
 import com.zerobase.munbanggu.user.service.UserService;
 import com.zerobase.munbanggu.util.JwtService;

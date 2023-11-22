@@ -1,10 +1,10 @@
-package com.zerobase.munbanggu.config;
+package com.zerobase.munbanggu.common.config;
 
-import com.zerobase.munbanggu.config.auth.CustomOAuth2UserService;
-import com.zerobase.munbanggu.config.auth.JwtAuthenticationEntryPoint;
-import com.zerobase.munbanggu.config.auth.JwtAuthenticationFilter;
-import com.zerobase.munbanggu.config.auth.OAuth2FailureHandler;
-import com.zerobase.munbanggu.config.auth.OAuth2SuccessHandler;
+import com.zerobase.munbanggu.auth.CustomOAuth2UserService;
+import com.zerobase.munbanggu.auth.JwtAuthenticationEntryPoint;
+import com.zerobase.munbanggu.auth.JwtAuthenticationFilter;
+import com.zerobase.munbanggu.auth.OAuth2FailureHandler;
+import com.zerobase.munbanggu.auth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

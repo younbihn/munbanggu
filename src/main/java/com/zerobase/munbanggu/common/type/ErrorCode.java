@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.type;
+package com.zerobase.munbanggu.common.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public enum ErrorCode {
     NOT_PARTICIPATING("해당 스터디에 참여하고 있지 않습니다"),
     INVALID_USER_OR_STUDY("사용자 혹은 스터디가 존재하지 않습니다."),
     INSUFFICIENT_USER_CAPACITY("스터디 참여자 수가 최소 정원 이하입니다."),
-
+    NOT_FOUND_STUDY_MEMBER("스터디에 가입되지 않은 회원입니다."),
     ;
 
 

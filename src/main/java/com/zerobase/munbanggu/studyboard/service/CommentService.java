@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.studyboard.service;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.studyboard.exception.NoPermissionException;
 import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
@@ -9,7 +9,7 @@ import com.zerobase.munbanggu.studyboard.model.entity.Comment;
 import com.zerobase.munbanggu.studyboard.model.entity.StudyBoardPost;
 import com.zerobase.munbanggu.studyboard.repository.CommentRepository;
 import com.zerobase.munbanggu.studyboard.repository.StudyBoardPostRepository;
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.exception.NotFoundUserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;

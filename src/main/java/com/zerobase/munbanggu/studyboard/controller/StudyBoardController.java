@@ -1,9 +1,9 @@
 package com.zerobase.munbanggu.studyboard.controller;
 
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_REQUEST_BODY;
-import static com.zerobase.munbanggu.type.ErrorCode.INVALID_TOKEN;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_REQUEST_BODY;
+import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
-import com.zerobase.munbanggu.dto.PageResponse;
+import com.zerobase.munbanggu.common.dto.PageResponse;
 import com.zerobase.munbanggu.studyboard.exception.InvalidRequestBodyException;
 import com.zerobase.munbanggu.studyboard.model.dto.PostRequest;
 import com.zerobase.munbanggu.studyboard.model.dto.PostResponse;

@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.user.exception;
 
-import com.zerobase.munbanggu.type.ErrorCode;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
 

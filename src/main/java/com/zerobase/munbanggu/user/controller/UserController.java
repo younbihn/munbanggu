@@ -1,11 +1,10 @@
 package com.zerobase.munbanggu.user.controller;
 
 import com.zerobase.munbanggu.aws.S3Uploader;
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.model.entity.User;
-import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.service.UserService;
 import java.io.IOException;
 import java.util.Optional;

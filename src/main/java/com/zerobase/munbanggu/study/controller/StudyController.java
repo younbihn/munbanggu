@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.study.controller;
 
-import com.zerobase.munbanggu.config.auth.TokenProvider;
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.study.dto.StudyDto;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.service.StudyService;
@@ -36,7 +36,7 @@ public class StudyController {
 
         Optional<User> user = userService.getUser(tokenProvider.getId(token));
         if (user.isPresent()) {
-            Study openedStudy = studyService.openStudy(studyDto);
+            Study openedStudy = studyService.openStudy(studyDto, user.get());
             return new ResponseEntity<>(openedStudy, HttpStatus.CREATED);
         }else {
             // 토큰이 유효하지 않은 경우 처리

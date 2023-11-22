@@ -1,9 +1,9 @@
 package com.zerobase.munbanggu.studyboard.service;
 
-import static com.zerobase.munbanggu.type.ErrorCode.ALREADY_VOTED;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_OPTION;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_USER_ID;
-import static com.zerobase.munbanggu.type.ErrorCode.NOT_FOUND_VOTE;
+import static com.zerobase.munbanggu.common.type.ErrorCode.ALREADY_VOTED;
+import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_OPTION;
+import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_USER_ID;
+import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_VOTE;
 
 import com.zerobase.munbanggu.studyboard.exception.AlreadyVotedException;
 import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;

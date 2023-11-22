@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.study.exception;
 
-import com.zerobase.munbanggu.dto.ErrorResponse;
+import com.zerobase.munbanggu.common.dto.ErrorResponse;
 import com.zerobase.munbanggu.user.exception.InvalidTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

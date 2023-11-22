@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.config;
+package com.zerobase.munbanggu.common.config;
 
 import lombok.RequiredArgsConstructor;
 

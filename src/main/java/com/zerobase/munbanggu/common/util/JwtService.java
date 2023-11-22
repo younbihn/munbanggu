@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.util;
+package com.zerobase.munbanggu.common.util;
 
 import com.zerobase.munbanggu.user.dto.UserInfo;
 import com.zerobase.munbanggu.user.type.Role;
