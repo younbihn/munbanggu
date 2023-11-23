@@ -2,9 +2,11 @@ package com.zerobase.munbanggu.studyboard.controller;
 
 import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.common.dto.PageResponse;
 import com.zerobase.munbanggu.common.exception.InvalidTokenException;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
+import com.zerobase.munbanggu.studyboard.model.dto.CommentResponse;
 import com.zerobase.munbanggu.studyboard.service.StudyCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,50 +28,36 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudyCommentController {
 
     private final StudyCommentService studyCommentService;
-
+    private final TokenProvider tokenProvider;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String AUTHORIZATION_PREFIX = "Bearer ";
+
 
     @PostMapping("/{post_id}")
-    public ResponseEntity<?> create(@PathVariable("post_id") Long postId, @RequestBody CommentRequest commentRequest,
+    public ResponseEntity<String> create(@PathVariable("post_id") Long postId, @RequestBody CommentRequest commentRequest,
             @RequestHeader(value = AUTHORIZATION_HEADER) String authHeader) {
-        if (!StringUtils.hasText(authHeader)) {
-            throw new InvalidTokenException(INVALID_TOKEN);
-        }
-
-        String token = authHeader.replace(AUTHORIZATION_PREFIX, "");
+        String token = tokenProvider.getRawToken(authHeader);
         studyCommentService.create(postId, commentRequest, token);
         return ResponseEntity.ok().body("댓글이 작성되었습니다.");
     }
 
     @DeleteMapping("/{post_id}/{comment_id}")
-    public ResponseEntity<?> delete(@PathVariable("post_id") Long postId, @PathVariable("comment_id") Long commentId,
+    public ResponseEntity<String> delete(@PathVariable("post_id") Long postId, @PathVariable("comment_id") Long commentId,
             @RequestHeader(value = AUTHORIZATION_HEADER) String authHeader) {
         if (!StringUtils.hasText(authHeader)) {
             throw new InvalidTokenException(INVALID_TOKEN);
         }
-
-        String token = authHeader.replace(AUTHORIZATION_PREFIX, "");
+        String token = tokenProvider.getRawToken(authHeader);
         studyCommentService.delete(postId, commentId, token);
         return ResponseEntity.ok().body("댓글이 삭제되었습니다.");
     }
 
     @GetMapping("/{post_id}")
-    public ResponseEntity<?> retrieveAllComments(@PathVariable("post_id") Long postId,
+    public ResponseEntity<PageResponse<CommentResponse>> retrieveAllComments(@PathVariable("post_id") Long postId,
             @RequestHeader(value = AUTHORIZATION_HEADER) String authHeader, @PageableDefault() Pageable pageable) {
-
-        String token = getToken(authHeader);
-
+        String token = tokenProvider.getRawToken(authHeader);
         return ResponseEntity.ok().body(PageResponse.from(
                 studyCommentService.retrieveAllComments(postId, token, pageable)));
-    }
-
-    private String getToken(String authHeader) {
-        if (!StringUtils.hasText(authHeader)) {
-            throw new InvalidTokenException(INVALID_TOKEN);
-        }
-        return authHeader.replace(AUTHORIZATION_PREFIX, "");
     }
 
 }

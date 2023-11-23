@@ -5,9 +5,13 @@ import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_OPTION;
 import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_USER_ID;
 import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_VOTE;
 
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.common.exception.AlreadyVotedException;
+import com.zerobase.munbanggu.common.exception.NoPermissionException;
 import com.zerobase.munbanggu.common.exception.NotFoundPostException;
 import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.type.ErrorCode;
+import com.zerobase.munbanggu.common.util.StudyUtil;
 import com.zerobase.munbanggu.studyboard.model.entity.UserVote;
 import com.zerobase.munbanggu.studyboard.model.entity.Vote;
 import com.zerobase.munbanggu.studyboard.model.entity.VoteOption;
@@ -30,12 +34,20 @@ public class VoteService {
     private final VoteRepository voteRepository;
     private final VoteOptionRepository voteOptionRepository;
     private final UserVoteRepository userVoteRepository;
+    private final TokenProvider tokenProvider;
+    private final StudyUtil studyUtil;
 
     @Transactional
-    public void vote(Long userId, Long voteId, Long optionId) {
+    public void vote(Long studyId, Long voteId, Long optionId, String token) {
+
+        Long userId = tokenProvider.getId(token);
+        if (studyUtil.existStudyMember(studyId, userId)) {
+            throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
+        }
 
         User user = findUser(userId);
         Vote vote = findVote(voteId);
+
         VoteOption selectedOption = findOption(optionId);
         log.info("투표 시작 - User : {}, Vote : {}, Option: {}", userId, voteId, optionId);
 

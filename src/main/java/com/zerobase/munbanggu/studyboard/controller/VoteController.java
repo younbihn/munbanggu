@@ -21,11 +21,9 @@ public class VoteController {
 
     @PostMapping("/{study_id}/vote/{vote_id}/vote")
     public ResponseEntity<?> vote(@PathVariable("study_id") Long studyId, @PathVariable("vote_id") Long voteId,
-            @RequestParam("option") Long optionId, @RequestHeader(name = "Authorization") String authorizationHeader) {
-//        String token = authorizationHeader.replace("Bearer ", "");
-//        Long userId = tokenProvider.getId(token);
-        Long userId = 1L;
-        voteService.vote(userId, voteId, optionId);
+            @RequestParam("option") Long optionId, @RequestHeader(name = "Authorization") String authHeader) {
+        String token = tokenProvider.getRawToken(authHeader);
+        voteService.vote(studyId, voteId, optionId, token);
         return ResponseEntity.ok().build();
     }
 }
