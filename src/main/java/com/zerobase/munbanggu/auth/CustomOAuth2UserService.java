@@ -32,7 +32,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         User user = saveOrUpdate(attributes);
 
-        return new CustomOAuth2User(user, attributes.getAuthProvider(),
+        return new CustomOAuth2User(user, attributes.getAuthProvider(), attributes.getLoginType(),
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
                 attributes.getAttributes(), attributes.getNameAttributeKey());
     }

@@ -23,7 +23,8 @@ class ChecklistServiceTest {
   @Autowired
   private ChecklistService checklistService;
   @Autowired
-      private StudyRepository studyRepository;
+  private StudyRepository studyRepository;
+
 
   Long userId = 1L;
   Long checklistId = 10L;
@@ -65,6 +66,7 @@ class ChecklistServiceTest {
         .todo("강의듣기")
         .build();
 
+
     checklistRepository.saveAll(Arrays.asList(lst1, lst2, lst3, lst4, lst5, lst6));
 
     System.out.println("\n------------------------");
@@ -94,6 +96,7 @@ class ChecklistServiceTest {
     Checklist checklist = checklistRepository.findById(checklistId)
         .orElseThrow(() -> new NotFoundChecklistException(ErrorCode.CHECKLIST_NOT_EXIST));
     assert(!checklist.getTodo().equals(newTitle));
+
   }
 
   @Test
@@ -103,18 +106,19 @@ class ChecklistServiceTest {
     System.out.println("\nPREV "+checklistRepository.findById(checklistId).get().getTodo());
     checklistService.deleteChecklist(userId,checklistId);
     System.out.println("\nAFTER "+checklistRepository.findById(checklistId).isEmpty());
+
   }
 
   @Test
   void changeStatus() {
     createChecklistTest();
 
-    Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new NotFoundStudyException(ErrorCode.CHECKLIST_NOT_EXIST));
+    Checklist checklist = checklistRepository.findById(checklistId)orElseThrow(() -> new NotFoundStudyException(ErrorCode.CHECKLIST_NOT_EXIST));
     System.out.println("\n>> PREV : "+ checklist.isDone());
     checklist.setDone(true);
     checklistRepository.save(checklist);
     System.out.println("\n>> AFTER: "+ checklist.isDone());
+
   }
 
   @Test
@@ -133,5 +137,6 @@ class ChecklistServiceTest {
     assert (missions.size() == 2);
 
     List<Checklist> lst1 = missions.get("토익 스터디");
-    System.out.println("\n -------- "+lst1.isEmpty());
+    System.out.println("\n -------- " + lst1.isEmpty());
   }
+}

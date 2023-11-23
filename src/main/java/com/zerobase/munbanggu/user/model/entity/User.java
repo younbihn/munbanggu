@@ -1,6 +1,7 @@
 package com.zerobase.munbanggu.user.model.entity;
 
 import com.zerobase.munbanggu.user.type.AuthProvider;
+import com.zerobase.munbanggu.user.type.LoginType;
 import com.zerobase.munbanggu.user.type.Role;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -51,6 +52,9 @@ public class User {
     private AuthProvider authProvider;
 
     @Enumerated(EnumType.STRING)
+    private LoginType loginType;
+
+    @Enumerated(EnumType.STRING)
     @Builder.Default
     private Role role = Role.USER;
 
@@ -63,7 +67,7 @@ public class User {
 
     @CreatedDate
     private LocalDateTime createdDate;
-  
+
     public String getRoleKey() {
         return this.role.getKey();
     }
