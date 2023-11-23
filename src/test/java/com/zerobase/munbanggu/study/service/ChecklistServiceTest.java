@@ -113,7 +113,7 @@ class ChecklistServiceTest {
   void changeStatus() {
     createChecklistTest();
 
-    Checklist checklist = checklistRepository.findById(checklistId)orElseThrow(() -> new NotFoundStudyException(ErrorCode.CHECKLIST_NOT_EXIST));
+    Checklist checklist = checklistRepository.findById(checklistId).orElseThrow(() -> new NotFoundStudyException(ErrorCode.CHECKLIST_NOT_EXIST));
     System.out.println("\n>> PREV : "+ checklist.isDone());
     checklist.setDone(true);
     checklistRepository.save(checklist);
