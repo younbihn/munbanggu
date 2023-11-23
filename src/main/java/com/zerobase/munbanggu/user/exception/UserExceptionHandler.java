@@ -36,14 +36,4 @@ public class UserExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ErrorCode.INVALID_NICKNAME_FORMAT, e.getMessage()));
     }
-
-    @ExceptionHandler(NicknameAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleNicknameAlreadyExistsException(NicknameAlreadyExistsException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler(InvalidNicknameException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidNicknameException(InvalidNicknameException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-    }
 }
