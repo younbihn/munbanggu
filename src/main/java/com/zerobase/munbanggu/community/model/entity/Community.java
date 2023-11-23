@@ -1,6 +1,6 @@
 package com.zerobase.munbanggu.community.model.entity;
 
-import com.zerobase.munbanggu.community.Converter.CommunityCategoryConverter;
+import com.zerobase.munbanggu.community.converter.CommunityCategoryConverter;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.type.CommunityCategoty;
 import lombok.*;

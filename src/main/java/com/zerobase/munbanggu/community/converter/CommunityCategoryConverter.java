@@ -1,4 +1,4 @@
-package com.zerobase.munbanggu.community.Converter;
+package com.zerobase.munbanggu.community.converter;
 
 import com.zerobase.munbanggu.user.type.CommunityCategoty;
 
