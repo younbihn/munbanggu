@@ -87,90 +87,6 @@ public class ChecklistService {
         }
 
         return "Deleted Successfully\n id: " + checklist.getId();
-
-  @Transactional
-  public String changeStatus(Long userId, Long checklistId, boolean status) {
-    Checklist checklist = checklistRepository.findById(checklistId)
-        .orElseThrow(() -> new StudyException(ErrorCode.CHECKLIST_NOT_EXIST));
-
-    boolean prev = checklist.isDone(); // 초기값
-
-    if (checklist != null && userId.equals(checklist.getUser_id())) {
-      checklist.setDone(status);
-      checklistRepository.save(checklist);
-    } else
-      throw new UserException(ErrorCode.TOKEN_UNMATCHED);
-
-    return "Status changed Successfully\n" + prev + " -> " + checklist.isDone();
-  }
-
-  /**
-   * 사용자의 개인 체크리스트 및 참여하고 있는 스터디의 체크리스트 조회
-   * @param studyIds 사용자가 참여하고 있는 모든 스터디 ID list
-   * @return Map<스터디 ID, List < Checklist>>
-   */
-  public Map<String, List<Checklist>> findAllMissions(List<Study> studyIds) {
-
-    List<Checklist> checklists = checklistRepository.findByStudyIn(studyIds);
-
-    // 스터디 그룹별로 체크리스트 그룹화
-    return checklists.stream()
-        .collect(
-            // 스터디 아이디로 그룹화
-            Collectors.groupingBy(
-                checklist -> studyRepository.findById(checklist.getStudy().getId())
-                    .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST))
-                    .getTitle(), Collectors.toList()
-            )
-        );
-  }
-
-  public List<Checklist> findStudyMissionList(Long studyId, Long userId) {
-    Study study = studyRepository.findById(studyId)
-        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST));
-
-    List<Checklist> userMissionList =
-        checklistRepository.findByUserIdAndAccessType(userId, AccessType.USER);
-
-    List<Checklist> studyMissionList =
-        checklistRepository.findByStudyAndAccessType(study, AccessType.STUDY);
-
-    return Stream.concat(studyMissionList.stream(), userMissionList.stream())
-        .collect(Collectors.toList());
-
-  }
-
-  // 개인 달성도
-  public double getParticipationRate(Long userId, Long studyId) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new UserException(ErrorCode.USER_NOT_EXIST));
-    Study study = studyRepository.findById(studyId)
-        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST));
-
-    if (user != null && study != null) {
-      StudyUser studyUser = studyUserRepository.findByUserAndStudy(user, study);
-      return studyUser.getParticipationRate();
-    }
-    throw new StudyException(ErrorCode.INVALID_USER_OR_STUDY);
-  }
-
-  // 스터디에 참여하는 유저들의 평균 달성도
-  public Double getStudyParticipationRate(Long studyId) {
-    Study study = studyRepository.findById(studyId)
-        .orElseThrow(() -> new StudyException(ErrorCode.STUDY_NOT_EXIST));
-
-    if (study != null) {
-      List<StudyUser> participants = studyUserRepository.findByStudy(study);
-      int participantNum = participants.size();
-      double total = 0.0;
-
-      if (participantNum == 0)
-        throw new StudyException(ErrorCode.INSUFFICIENT_USER_CAPACITY);
-
-      for (StudyUser studyUser : participants) {
-        total += studyUser.getParticipationRate();
-      }
-      return total / participantNum;
     }
 
     @Transactional
@@ -309,5 +225,4 @@ public class ChecklistService {
 
         return ((double) completedNum / checklistNum) * 100.0;
     }
-
 }
