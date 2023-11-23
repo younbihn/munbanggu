@@ -135,4 +135,3 @@ class ChecklistServiceTest {
     List<Checklist> lst1 = missions.get("토익 스터디");
     System.out.println("\n -------- "+lst1.isEmpty());
   }
-}
