@@ -36,7 +36,11 @@ public class SendMessageService {
     private final int VERIFY_CODE_LEN = 5;
     private final AuthService authService;
 
-
+    /**
+     * 인증 문자 발송
+     * @param phoneNumber 핸드폰번호
+     * @return 토큰
+     */
     public String sendVerificationMessage(String phoneNumber) {
         String verificationCode = RandomStringUtils.random(VERIFY_CODE_LEN, false, true);
         String token = authService.createVerificationToken(phoneNumber, PHONE_VALID.getTime());

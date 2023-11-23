@@ -26,6 +26,12 @@ public class AuthService {
         }
     }
 
+    /**
+     * 토큰생성
+     * @param key   키
+     * @param time  저장시간
+     * @return  String 생성된 토큰
+     */
     public String createVerificationToken(String key, long time){
         String token = UUID.randomUUID().toString();
         redisUtil.setData(key, token, time);

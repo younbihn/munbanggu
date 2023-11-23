@@ -63,28 +63,44 @@ public class AuthController {
 
     /**
      * 메일 인증 controller
-     * @param mailVerificationDto - email, uuidToken
-     * @return AuthenticationStatus.SUCCESS / AuthenticationStatus.FAIL (인증성공여부)
+     *
+     * @param mailVerificationDto 메일인증dto
+     * @return AuthenticationStatus (SUCCESS/FAIL) (인증성공여부)
      */
     @GetMapping(value = "/verify-email") //이메일 인증
     public ResponseEntity<AuthenticationStatus> verifyMail(MailVerificationDto mailVerificationDto) {
         return ResponseEntity.ok(sendMailService.verifyEmail(mailVerificationDto));
     }
 
-    @PostMapping("/verify-phone") // 핸드폰 인증
+    /**
+     * 핸드폰 인증
+     *
+     * @param smsVerificationInfo 문자인증dto
+     * @return AuthenticationStatus (SUCCESS/FAIL) (인증성공여부)
+     */
+    @PostMapping("/verify-phone")
     public ResponseEntity<AuthenticationStatus> verifySMS(@RequestBody SmsVerificationInfo smsVerificationInfo) {
         return ResponseEntity.ok(sendMessageService.verifyCode(smsVerificationInfo));
     }
 
     /**
      * 아이디 찾기 신청 (유저 정보 확인 후, 문자발송)
-     * @param findUserInfoDto -
+     *
+     * @param findUserInfoDto 유저정보찾기dto
      * @return token
      */
     @PostMapping("/find-id")
     public ResponseEntity<String> requestFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
         return ResponseEntity.ok(userService.requestFindId(findUserInfoDto));
     }
+
+    /**
+     * 아이디 반환
+     *
+     * @param userId            사용자ID
+     * @param findUserInfoDto   유저정보찾기dto
+     * @return String id
+     */
     @GetMapping("/find-id/{user_id}/confirm")
     public ResponseEntity<String> verifyFindId(
         @PathVariable("user_id") Long userId,
@@ -92,6 +108,13 @@ public class AuthController {
         return ResponseEntity.ok(userService.returnId(userId,findUserInfoDto));
     }
 
+    /**
+     * 비밀번호 재설정 신청 (유저 정보 확인 후, 문자발송)
+     *
+     * @param userId            사용자ID
+     * @param findUserInfoDto   유저정보찾기dto
+     * @return token
+     */
     @PostMapping("/find-pw/{user_id}")
     public ResponseEntity<String> requestResetPw(
         @PathVariable("user_id") Long userId,
@@ -99,6 +122,13 @@ public class AuthController {
         return ResponseEntity.ok(userService.requestResetPw(userId,findUserInfoDto));
     }
 
+    /**
+     * 비밀번호 재설정
+     *
+     * @param userId     사용자ID
+     * @param resetPwDto 비밀번호재설정dto
+     * @return AuthenticationStatus (SUCCESS/FAIL)
+     */
     @PostMapping("/find-pw/{user_id}/confirm")
     public ResponseEntity<AuthenticationStatus> verifyResetPw(
         @PathVariable("user_id") Long userId,

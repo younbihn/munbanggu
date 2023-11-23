@@ -1,6 +1,13 @@
 package com.zerobase.munbanggu.point.controller;
 
+import com.zerobase.munbanggu.common.exception.NotFoundStudyException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.point.service.PointService;
+import com.zerobase.munbanggu.study.model.entity.Study;
+import com.zerobase.munbanggu.study.repository.StudyRepository;
+import com.zerobase.munbanggu.user.model.entity.User;
+import com.zerobase.munbanggu.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PointController {
     private final PointService pointService;
-
+    private final StudyRepository studyRepository;
+    private final UserService userService;
 //    // 카카오페이결제 요청
 //    @GetMapping("/order/pay")
 //    public @ResponseBody ReadyResponse payReady(@RequestParam(name = "total_amount") int totalAmount, Order order, Model model) {
@@ -64,10 +72,20 @@ public class PointController {
 //        return "redirect:/carts";
 //    }
 
+  /**
+   * 환급 기능
+   * @param studyId 스터디 아이디
+   * @param userId 유저 아이디
+   * @return HttpStatus.OK
+   */
     @PostMapping("/study/{study_id}/user/{user_id}")
-    public ResponseEntity<String> refund(
+    public ResponseEntity<?> refund(
         @PathVariable("study_id")Long studyId,@PathVariable("user_id")Long userId){
 
-      return ResponseEntity.ok(pointService.getUserRefund(userId, studyId));
+      User user = userService.getUser(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
+      Study study = studyRepository.findById(studyId).orElseThrow(() -> new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST));
+      pointService.getUserRefund(user, study);
+
+      return ResponseEntity.ok().body("환급이 완료되었습니다");
     }
 }
