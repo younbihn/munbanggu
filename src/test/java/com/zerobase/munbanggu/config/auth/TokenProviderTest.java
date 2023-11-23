@@ -4,6 +4,7 @@ import com.zerobase.munbanggu.auth.CustomOAuth2User;
 import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.type.AuthProvider;
+import com.zerobase.munbanggu.user.type.LoginType;
 import com.zerobase.munbanggu.user.type.Role;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ class TokenProviderTest {
         user = User.builder()
                 .id(1L)
                 .authProvider(AuthProvider.KAKAO)
+                .loginType(LoginType.KAKAO)
                 .email("test1234@gmail.com")
                 .role(Role.USER)
                 .build();
@@ -41,7 +43,7 @@ class TokenProviderTest {
         attributes.put("kakao_account", new Object());
         String nameAttributeKey = "id";
 
-        oAuth2User = new CustomOAuth2User(user, AuthProvider.KAKAO,
+        oAuth2User = new CustomOAuth2User(user, AuthProvider.KAKAO, LoginType.KAKAO,
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())), attributes, nameAttributeKey);
     }
 
@@ -62,6 +64,7 @@ class TokenProviderTest {
         User user = User.builder()
                 .id(1L)
                 .authProvider(AuthProvider.KAKAO)
+                .loginType(LoginType.KAKAO)
                 .email("test1234@gmail.com")
                 .role(Role.USER)
                 .build();

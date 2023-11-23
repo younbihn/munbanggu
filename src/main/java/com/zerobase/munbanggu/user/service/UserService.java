@@ -31,6 +31,7 @@ import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.StudyUserRepository;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
+import com.zerobase.munbanggu.user.type.LoginType;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -129,6 +130,7 @@ public class UserService {
                 .email(userDto.getEmail())
                 .password(encodedPassword)
                 .nickname(userDto.getNickname())
+                .loginType(LoginType.EMAIL)
                 .phone(userDto.getPhone())
                 .profileImageUrl(userDto.getProfileImageUrl())
                 .build();

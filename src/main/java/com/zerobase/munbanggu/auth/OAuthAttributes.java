@@ -2,6 +2,7 @@ package com.zerobase.munbanggu.auth;
 
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.type.AuthProvider;
+import com.zerobase.munbanggu.user.type.LoginType;
 import com.zerobase.munbanggu.user.type.Role;
 import java.util.Map;
 import lombok.Builder;
@@ -18,16 +19,18 @@ public class OAuthAttributes {
     private final String email;
     private final Role role;
     private final AuthProvider authProvider;
+    private final LoginType loginType;
 
     @Builder
     public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String nickname, String email,
-             Role role, AuthProvider authProvider) {
+            Role role, AuthProvider authProvider, LoginType loginType) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.nickname = nickname;
         this.email = email;
         this.role = role;
         this.authProvider = authProvider;
+        this.loginType = loginType;
     }
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName,
@@ -48,6 +51,7 @@ public class OAuthAttributes {
                 .nickname((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
                 .authProvider(AuthProvider.KAKAO)
+                .loginType(LoginType.KAKAO)
                 .role(Role.USER)
                 .build();
     }
@@ -58,6 +62,7 @@ public class OAuthAttributes {
                 .email(email)
                 .role(role)
                 .authProvider(authProvider)
+                .loginType(loginType)
                 .build();
     }
 
