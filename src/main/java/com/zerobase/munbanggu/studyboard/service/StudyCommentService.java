@@ -5,9 +5,9 @@ import com.zerobase.munbanggu.studyboard.exception.NoPermissionException;
 import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentResponse;
-import com.zerobase.munbanggu.studyboard.model.entity.Comment;
+import com.zerobase.munbanggu.studyboard.model.entity.StudyComment;
 import com.zerobase.munbanggu.studyboard.model.entity.StudyBoardPost;
-import com.zerobase.munbanggu.studyboard.repository.CommentRepository;
+import com.zerobase.munbanggu.studyboard.repository.StudyCommentRepository;
 import com.zerobase.munbanggu.studyboard.repository.StudyBoardPostRepository;
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.exception.NotFoundUserException;
@@ -23,39 +23,39 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class StudyCommentService {
 
     private final TokenProvider tokenProvider;
     private final UserRepository userRepository;
     private final StudyBoardPostRepository studyBoardPostRepository;
-    private final CommentRepository commentRepository;
+    private final StudyCommentRepository studyCommentRepository;
 
     @Transactional
     public void create(Long postId, CommentRequest commentRequest, String token) {
         User user = findUser(tokenProvider.getId(token));
         StudyBoardPost post = findPost(postId);
 
-        Comment comment = Comment.builder()
+        StudyComment comment = StudyComment.builder()
                 .content(commentRequest.getContent())
                 .user(user)
                 .studyBoardPost(post)
                 .build();
 
-        Comment parentComment;
+        StudyComment parentComment;
         if (commentRequest.getParentId() != null) {
-            parentComment = commentRepository.findById(commentRequest.getParentId())
+            parentComment = studyCommentRepository.findById(commentRequest.getParentId())
                     .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_COMMENT));
 
             comment.updateParent(parentComment);
         }
-        commentRepository.save(comment);
+        studyCommentRepository.save(comment);
     }
 
     @Transactional
     public void delete(Long postId, Long commentId, String token) {
         StudyBoardPost post = findPost(postId);
-        Comment comment = findComment(commentId);
-        Comment deletableComment = getDeletableComment(comment);
+        StudyComment comment = findComment(commentId);
+        StudyComment deletableComment = getDeletableComment(comment);
         Long userId = tokenProvider.getId(token);
 
         if (!comment.getStudyBoardPost().getId().equals(post.getId())) {
@@ -70,7 +70,7 @@ public class CommentService {
             if (!deletableComment.getChildren().isEmpty()) {
                 deletableComment.setDeleted(true);
             } else {
-                commentRepository.delete(deletableComment);
+                studyCommentRepository.delete(deletableComment);
             }
         }
     }
@@ -81,7 +81,7 @@ public class CommentService {
         StudyBoardPost post = findPost(postId);
         Page<CommentResponse> commentResponses = null;
         if (post != null) {
-            Page<Comment> commentPage = commentRepository.findByStudyBoardPostId(postId, pageable);
+            Page<StudyComment> commentPage = studyCommentRepository.findByStudyBoardPostId(postId, pageable);
             commentResponses = commentPage.map(CommentResponse::from);
         }
         return commentResponses;
@@ -97,16 +97,16 @@ public class CommentService {
                 .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_POST));
     }
 
-    private Comment findComment(Long commentId) {
-        return commentRepository.findById(commentId)
+    private StudyComment findComment(Long commentId) {
+        return studyCommentRepository.findById(commentId)
                 .orElseThrow(() -> new NotFoundPostException(ErrorCode.NOT_FOUND_COMMENT));
     }
 
-    private Comment getDeletableComment(Comment comment) {
-        Comment parent = comment.getParent();
+    private StudyComment getDeletableComment(StudyComment comment) {
+        StudyComment parent = comment.getParent();
 
         if (parent == null) {
-            List<Comment> nonDeletedChildren = comment.getChildren().stream()
+            List<StudyComment> nonDeletedChildren = comment.getChildren().stream()
                     .filter(c -> !c.isDeleted()).collect(Collectors.toList());
 
             if (!nonDeletedChildren.isEmpty()) {
@@ -115,16 +115,16 @@ public class CommentService {
             }
         } else if (parent.isDeleted() && parent.getChildren().size() > 1) {
             // 삭제 안된 자식 댓글 리스트
-            List<Comment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).collect(
+            List<StudyComment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).collect(
                     Collectors.toList());
             // 삭제 안된 자식 댓글들이 있다면!
             if (nonDeletedChildren.size() > 1) {
                 comment.setDeleted(true);
                 return null;
             }
-            commentRepository.delete(parent);
+            studyCommentRepository.delete(parent);
         } else if (parent.isDeleted() && parent.getChildren().size() == 1) {
-            commentRepository.delete(parent);
+            studyCommentRepository.delete(parent);
         }
         return comment;
     }

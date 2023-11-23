@@ -4,7 +4,7 @@ import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
 import com.zerobase.munbanggu.common.dto.PageResponse;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
-import com.zerobase.munbanggu.studyboard.service.CommentService;
+import com.zerobase.munbanggu.studyboard.service.StudyCommentService;
 import com.zerobase.munbanggu.user.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/post-comment")
 @RequiredArgsConstructor
-public class CommentController {
+public class StudyCommentController {
 
-    private final CommentService commentService;
+    private final StudyCommentService studyCommentService;
 
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -39,7 +39,7 @@ public class CommentController {
         }
 
         String token = authHeader.replace(AUTHORIZATION_PREFIX, "");
-        commentService.create(postId, commentRequest, token);
+        studyCommentService.create(postId, commentRequest, token);
         return ResponseEntity.ok().body("댓글이 작성되었습니다.");
     }
 
@@ -51,7 +51,7 @@ public class CommentController {
         }
 
         String token = authHeader.replace(AUTHORIZATION_PREFIX, "");
-        commentService.delete(postId, commentId, token);
+        studyCommentService.delete(postId, commentId, token);
         return ResponseEntity.ok().body("댓글이 삭제되었습니다.");
     }
 
@@ -61,7 +61,8 @@ public class CommentController {
 
         String token = getToken(authHeader);
 
-        return ResponseEntity.ok().body(PageResponse.from(commentService.retrieveAllComments(postId, token, pageable)));
+        return ResponseEntity.ok().body(PageResponse.from(
+                studyCommentService.retrieveAllComments(postId, token, pageable)));
     }
 
     private String getToken(String authHeader) {

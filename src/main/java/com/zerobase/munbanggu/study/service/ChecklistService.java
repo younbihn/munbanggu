@@ -6,18 +6,22 @@ import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.ChecklistRepository;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.study.type.AccessType;
+import com.zerobase.munbanggu.study.type.ChecklistCycle;
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.model.entity.StudyUser;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.StudyUserRepository;
 import com.zerobase.munbanggu.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -141,12 +145,7 @@ public class ChecklistService {
 
     if (user != null && study != null) {
       StudyUser studyUser = studyUserRepository.findByUserAndStudy(user, study);
-      int cycle = study.getRefundCycle().getValue();
-
-      if (studyUser != null) {
-        return calculateParticipationRate(studyUser.getChecklists(),
-            studyUser.getLatestCertificationDate().plusMonths(cycle));
-      }
+      return studyUser.getParticipationRate();
     }
     throw new StudyException(ErrorCode.INVALID_USER_OR_STUDY);
   }
@@ -159,22 +158,51 @@ public class ChecklistService {
     if (study != null) {
       List<StudyUser> participants = studyUserRepository.findByStudy(study);
       int participantNum = participants.size();
-      int cycle = study.getRefundCycle().getValue();
       double total = 0.0;
 
       if (participantNum == 0)
         throw new StudyException(ErrorCode.INSUFFICIENT_USER_CAPACITY);
 
       for (StudyUser studyUser : participants) {
-        total += calculateParticipationRate(studyUser.getChecklists(),
-            studyUser.getLatestCertificationDate().plusMonths(cycle));
+        total += studyUser.getParticipationRate();
       }
       return total / participantNum;
     }
     throw new StudyException(ErrorCode.STUDY_NOT_EXIST);
   }
 
-  public double calculateParticipationRate(List<Checklist> checklists,LocalDateTime endDate) {
+  /**
+   * 유저 참여도 매일 자정에 업데이트 실행
+   * 인증사이클이 매일이면 interval=1, 일주일에 n회면 interval=7일마다 업데이트
+   * @param studyUser
+   * @param study
+   * @return 업데이트 성공/실패
+   */
+  @Scheduled(cron = "0 0 0 * * ?")  //매일 자정에 실행
+  public String updateParticipationRate(StudyUser studyUser, Study study) {
+    ChecklistCycle cycle = study.getChecklist_cycle();
+    LocalDateTime lastCertificationDate = study.getLatest_refund_date();
+
+    int interval = cycle.isDaily() ? 1 : 7 ;
+    return updateRate(studyUser,lastCertificationDate,interval);
+  }
+
+  public String updateRate(StudyUser studyUser, LocalDateTime lastCertificationDate, int interval){
+    long daysBetween = ChronoUnit.DAYS.between(lastCertificationDate.toLocalDate(), LocalDateTime.now().toLocalDate());
+
+    if (daysBetween >= interval) {
+      double participationRate = calculateParticipationRate(studyUser.getChecklists(),
+                  studyUser.getStudy().getLatest_refund_date().plusDays(interval).toLocalDate());
+
+      studyUser.setParticipationRate(participationRate);
+      studyUser.getStudy().setLatest_refund_date(LocalDateTime.now());
+      studyUserRepository.save(studyUser);
+      return "참여도 갱신 완료";
+    }
+    return "참여도 갱신 실패";
+  }
+
+  public double calculateParticipationRate(List<Checklist> checklists, LocalDate endDate) {
     int checklistNum = checklists.size();
 
     if (checklistNum == 0)
@@ -182,9 +210,9 @@ public class ChecklistService {
 
     long completedNum = checklists.stream()
         .filter(checklist -> checklist.isDone()
-        && checklist.getCreatedDate().isBefore(endDate))
+            && checklist.getCreatedDate().toLocalDate().isBefore(endDate))
         .count();
 
-    return (completedNum / checklistNum) * 100.0;
+    return ((double) completedNum / checklistNum) * 100.0;
   }
 }
