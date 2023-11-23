@@ -1,9 +1,10 @@
-package com.zerobase.munbanggu.studyboard.exception;
+package com.zerobase.munbanggu.common.exception;
 
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import java.util.Map;
 import lombok.Getter;
 
+// Request Body 입력 값 중 유효하지 않은 값이 있는 경우 발생하는 예외
 @Getter
 public class InvalidRequestBodyException extends RuntimeException {
 

@@ -1,16 +1,17 @@
 package com.zerobase.munbanggu.studyboard.service;
 
 import com.zerobase.munbanggu.auth.TokenProvider;
-import com.zerobase.munbanggu.studyboard.exception.NoPermissionException;
-import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
+import com.zerobase.munbanggu.common.exception.NoPermissionException;
+import com.zerobase.munbanggu.common.exception.NotFoundPostException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.type.ErrorCode;
+import com.zerobase.munbanggu.common.util.StudyUtil;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentResponse;
-import com.zerobase.munbanggu.studyboard.model.entity.StudyComment;
 import com.zerobase.munbanggu.studyboard.model.entity.StudyBoardPost;
-import com.zerobase.munbanggu.studyboard.repository.StudyCommentRepository;
+import com.zerobase.munbanggu.studyboard.model.entity.StudyComment;
 import com.zerobase.munbanggu.studyboard.repository.StudyBoardPostRepository;
-import com.zerobase.munbanggu.common.type.ErrorCode;
-import com.zerobase.munbanggu.user.exception.NotFoundUserException;
+import com.zerobase.munbanggu.studyboard.repository.StudyCommentRepository;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.List;
@@ -29,11 +30,18 @@ public class StudyCommentService {
     private final UserRepository userRepository;
     private final StudyBoardPostRepository studyBoardPostRepository;
     private final StudyCommentRepository studyCommentRepository;
+    private final StudyUtil studyUtil;
 
     @Transactional
     public void create(Long postId, CommentRequest commentRequest, String token) {
         User user = findUser(tokenProvider.getId(token));
         StudyBoardPost post = findPost(postId);
+
+        Long studyId = post.getStudy().getId();
+
+        if (studyUtil.existStudyMember(studyId, user.getId())) {
+            throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
+        }
 
         StudyComment comment = StudyComment.builder()
                 .content(commentRequest.getContent())
@@ -57,6 +65,11 @@ public class StudyCommentService {
         StudyComment comment = findComment(commentId);
         StudyComment deletableComment = getDeletableComment(comment);
         Long userId = tokenProvider.getId(token);
+        Long studyId = post.getStudy().getId();
+
+        if (studyUtil.existStudyMember(studyId, userId)) {
+            throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
+        }
 
         if (!comment.getStudyBoardPost().getId().equals(post.getId())) {
             throw new NotFoundPostException(ErrorCode.NOT_FOUND_POST);
@@ -76,15 +89,14 @@ public class StudyCommentService {
     }
 
     public Page<CommentResponse> retrieveAllComments(Long postId, String token, Pageable pageable) {
-        // TODO: 스터디 가입되었는지 조회
         Long userId = tokenProvider.getId(token);
         StudyBoardPost post = findPost(postId);
-        Page<CommentResponse> commentResponses = null;
-        if (post != null) {
-            Page<StudyComment> commentPage = studyCommentRepository.findByStudyBoardPostId(postId, pageable);
-            commentResponses = commentPage.map(CommentResponse::from);
+        Long studyId = post.getStudy().getId();
+        if (studyUtil.existStudyMember(studyId, userId)) {
+            throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
-        return commentResponses;
+        Page<StudyComment> commentPage = studyCommentRepository.findByStudyBoardPostId(postId, pageable);
+        return commentPage.map(CommentResponse::from);
     }
 
     private User findUser(Long userId) {
@@ -114,10 +126,9 @@ public class StudyCommentService {
                 return null;
             }
         } else if (parent.isDeleted() && parent.getChildren().size() > 1) {
-            // 삭제 안된 자식 댓글 리스트
             List<StudyComment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).collect(
                     Collectors.toList());
-            // 삭제 안된 자식 댓글들이 있다면!
+
             if (nonDeletedChildren.size() > 1) {
                 comment.setDeleted(true);
                 return null;

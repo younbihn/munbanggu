@@ -1,13 +1,14 @@
 package com.zerobase.munbanggu.studyboard.service;
 
 import com.zerobase.munbanggu.auth.TokenProvider;
-import com.zerobase.munbanggu.study.exception.NotFoundStudyException;
+import com.zerobase.munbanggu.common.exception.NoPermissionException;
+import com.zerobase.munbanggu.common.exception.NotFoundPostException;
+import com.zerobase.munbanggu.common.exception.NotFoundStudyException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.type.ErrorCode;
+import com.zerobase.munbanggu.common.util.StudyUtil;
 import com.zerobase.munbanggu.study.model.entity.Study;
-import com.zerobase.munbanggu.study.model.entity.StudyMember;
-import com.zerobase.munbanggu.study.repository.StudyMemberRepository;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
-import com.zerobase.munbanggu.studyboard.exception.NoPermissionException;
-import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
 import com.zerobase.munbanggu.studyboard.model.dto.PostRequest;
 import com.zerobase.munbanggu.studyboard.model.dto.PostResponse;
 import com.zerobase.munbanggu.studyboard.model.dto.VoteOptionRequest;
@@ -17,14 +18,9 @@ import com.zerobase.munbanggu.studyboard.model.entity.VoteOption;
 import com.zerobase.munbanggu.studyboard.repository.StudyBoardPostRepository;
 import com.zerobase.munbanggu.studyboard.repository.VoteRepository;
 import com.zerobase.munbanggu.studyboard.type.Type;
-import com.zerobase.munbanggu.common.type.ErrorCode;
-import com.zerobase.munbanggu.user.exception.NotFoundUserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,18 +38,18 @@ public class StudyBoardService {
     private final UserRepository userRepository;
     private final StudyRepository studyRepository;
     private final TokenProvider tokenProvider;
-    private final StudyMemberRepository studyMemberRepository;
-
+    private final StudyUtil studyUtil;
     @Transactional
     public PostResponse create(PostRequest request, Long studyId, String token) {
         StudyBoardPost post = buildPost(request, studyId, token);
         Long userId = tokenProvider.getId(token);
         StudyBoardPost newPost = studyBoardPostRepository.save(post);
+
         if (request.getType() == Type.VOTE) {
             Vote vote = buildVote(request, post);
             voteRepository.save(vote);
         }
-        if (!existStudyMember(studyId, userId)) {
+        if (studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         return PostResponse.from(newPost);
@@ -64,19 +60,23 @@ public class StudyBoardService {
         findStudy(studyId);
         Long userId = tokenProvider.getId(token);
 
-        if (!existStudyMember(studyId, userId)) {
+        if (studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
 
         if (!userId.equals(post.getUser().getId())) {
-            log.error("user id {} 수정 시도 / post id {} user id {}");
+            log.error("user id {} 수정 시도 / post id {} user id {}", userId, post.getId(), post.getUser().getId());
             throw new NoPermissionException(ErrorCode.NO_PERMISSION_TO_MODIFY);
         }
-        post = updatePost(post, request);
-        return PostResponse.from(studyBoardPostRepository.save(post));
+        return PostResponse.from(studyBoardPostRepository.save(updatePost(post, request)));
     }
 
-    public Page<PostResponse> search(String keyword, Pageable pageable) {
+    public Page<PostResponse> search(Long studyId, String keyword, Pageable pageable, String token) {
+        Long userId = tokenProvider.getId(token);
+
+        if (studyUtil.existStudyMember(studyId, userId)) {
+            throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
+        }
         Page<StudyBoardPost> postPage = studyBoardPostRepository.findByTitleContainingIgnoreCase(
                 keyword, pageable);
 
@@ -90,26 +90,14 @@ public class StudyBoardService {
         Long userId = tokenProvider.getId(token);
         StudyBoardPost post = findPost(postId);
 
-        if (!existStudyMember(studyId, userId)) {
+        if (studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         if (!userId.equals(post.getUser().getId())) {
-            log.error("user id {} 삭제 시도 / post id {} user id {}");
+            log.error("user id {} 삭제 시도 / post id {} user id {}", userId, post.getId(), post.getUser().getId());
             throw new NoPermissionException(ErrorCode.NO_PERMISSION_TO_MODIFY);
         }
-        Optional<StudyBoardPost> optionalPost = studyBoardPostRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            studyBoardPostRepository.deleteById(postId);
-        } else {
-            throw new NotFoundPostException(ErrorCode.NOT_FOUND_POST);
-        }
-    }
-
-    private boolean existStudyMember(Long studyId, Long userId) {
-        List<StudyMember> studyMembers = studyMemberRepository.findByStudyId(studyId);
-        List<StudyMember> collect = studyMembers.stream()
-                .filter(studyMember -> studyMember.getUser().getId().equals(userId)).collect(Collectors.toList());
-        return !collect.isEmpty();
+        studyBoardPostRepository.deleteById(postId);
     }
 
     private User findUser(Long userId) {

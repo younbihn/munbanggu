@@ -1,16 +1,15 @@
-package com.zerobase.munbanggu.user.exception;
+package com.zerobase.munbanggu.common.exception;
 
 import com.zerobase.munbanggu.common.type.ErrorCode;
-import io.jsonwebtoken.JwtException;
 import lombok.Getter;
 
 @Getter
-public class InvalidTokenException extends JwtException {
-
+public class NotFoundChecklistException extends RuntimeException{
     private final ErrorCode errorCode;
 
-    public InvalidTokenException(ErrorCode errorCode) {
+    public NotFoundChecklistException(ErrorCode errorCode) {
         super(errorCode.getDescription());
         this.errorCode = errorCode;
     }
+
 }

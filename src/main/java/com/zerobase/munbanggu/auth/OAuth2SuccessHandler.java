@@ -5,10 +5,10 @@ import static com.zerobase.munbanggu.common.type.ErrorCode.EMAIL_NOT_EXIST;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.common.dto.TokenResponse;
-import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
+import com.zerobase.munbanggu.common.exception.DuplicatedEmailConflictException;
+import com.zerobase.munbanggu.common.util.RedisUtil;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.common.util.RedisUtil;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

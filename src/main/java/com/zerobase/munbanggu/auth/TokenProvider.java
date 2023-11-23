@@ -2,7 +2,7 @@ package com.zerobase.munbanggu.auth;
 
 import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
-import com.zerobase.munbanggu.user.exception.InvalidTokenException;
+import com.zerobase.munbanggu.common.exception.InvalidTokenException;
 import com.zerobase.munbanggu.user.type.Role;
 import com.zerobase.munbanggu.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;
@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @Service
@@ -148,14 +149,16 @@ public class TokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(getRawToken(token));
             return true;
-        }  catch (Exception e) {
+        } catch (Exception e) {
             throw new InvalidTokenException(INVALID_TOKEN);
         }
     }
 
-    public String getRawToken(String token) {
-        token = token.replace(AUTHORIZATION_PREFIX, "");
-        return token;
+    public String getRawToken(String authHeader) {
+        if (!StringUtils.hasText(authHeader)) {
+            throw new InvalidTokenException(INVALID_TOKEN);
+        }
+        return authHeader.replace(AUTHORIZATION_PREFIX, "");
     }
 
     public Authentication getAuthentication(String token) {
