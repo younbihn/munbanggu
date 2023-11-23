@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.studyboard.model.dto;
 
 
-import com.zerobase.munbanggu.studyboard.model.entity.Comment;
+import com.zerobase.munbanggu.studyboard.model.entity.StudyComment;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class CommentResponse {
 
     private LocalDateTime createdDate;
 
-    public static CommentResponse from(Comment comment) {
+    public static CommentResponse from(StudyComment comment) {
         return CommentResponse.builder()
                 .id(comment.getId())
                 .content(comment.getContent())
