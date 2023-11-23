@@ -39,7 +39,7 @@ public class StudyCommentService {
 
         Long studyId = post.getStudy().getId();
 
-        if (studyUtil.existStudyMember(studyId, user.getId())) {
+        if (!studyUtil.existStudyMember(studyId, user.getId())) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
 
@@ -67,7 +67,7 @@ public class StudyCommentService {
         Long userId = tokenProvider.getId(token);
         Long studyId = post.getStudy().getId();
 
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
 
@@ -92,7 +92,7 @@ public class StudyCommentService {
         Long userId = tokenProvider.getId(token);
         StudyBoardPost post = findPost(postId);
         Long studyId = post.getStudy().getId();
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         Page<StudyComment> commentPage = studyCommentRepository.findByStudyBoardPostId(postId, pageable);

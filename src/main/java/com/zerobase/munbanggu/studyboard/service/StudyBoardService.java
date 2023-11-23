@@ -49,7 +49,7 @@ public class StudyBoardService {
             Vote vote = buildVote(request, post);
             voteRepository.save(vote);
         }
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         return PostResponse.from(newPost);
@@ -60,7 +60,7 @@ public class StudyBoardService {
         findStudy(studyId);
         Long userId = tokenProvider.getId(token);
 
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
 
@@ -74,7 +74,7 @@ public class StudyBoardService {
     public Page<PostResponse> search(Long studyId, String keyword, Pageable pageable, String token) {
         Long userId = tokenProvider.getId(token);
 
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         Page<StudyBoardPost> postPage = studyBoardPostRepository.findByTitleContainingIgnoreCase(
@@ -90,7 +90,7 @@ public class StudyBoardService {
         Long userId = tokenProvider.getId(token);
         StudyBoardPost post = findPost(postId);
 
-        if (studyUtil.existStudyMember(studyId, userId)) {
+        if (!studyUtil.existStudyMember(studyId, userId)) {
             throw new NoPermissionException(ErrorCode.NOT_FOUND_STUDY_MEMBER);
         }
         if (!userId.equals(post.getUser().getId())) {
