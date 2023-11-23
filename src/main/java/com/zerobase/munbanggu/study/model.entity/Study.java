@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,7 +34,7 @@ public class Study {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long user_id;
+    private Long userId;
 
     private String title;
 
@@ -59,13 +60,13 @@ public class Study {
     private boolean start_attend_or_not;
 
     @Enumerated(EnumType.STRING)
-    @Nullable
+    @NotNull
     private ChecklistCycle checklist_cycle;
 
     private long fee;
 
     @Enumerated(EnumType.STRING)
-    @Nullable
+    @NotNull
     private RefundCycle refundCycle;
 
     @CreatedDate
@@ -75,9 +76,9 @@ public class Study {
     private EnrollmentStatus status;
 
     @CreatedDate
-    private LocalDateTime create_date;
+    private LocalDateTime createDate;
 
     @Nullable
-    private LocalDateTime delete_date;
+    private LocalDateTime deleteDate;
 
 }

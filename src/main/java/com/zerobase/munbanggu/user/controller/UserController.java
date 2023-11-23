@@ -2,14 +2,12 @@ package com.zerobase.munbanggu.user.controller;
 
 import com.zerobase.munbanggu.aws.S3Uploader;
 import com.zerobase.munbanggu.auth.TokenProvider;
+import com.zerobase.munbanggu.study.dto.JoinStudyDto;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.service.UserService;
-import com.zerobase.munbanggu.common.util.JwtService;
-
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,6 +45,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 사용자 정보 반환
+     *
+     * @param userId 사용자ID
+     * @return GetUserDto
+     */
     @GetMapping("/{user_id}")
     public ResponseEntity<GetUserDto> getUserInfo(@PathVariable("user_id")Long userId){
         return ResponseEntity.ok(userService.getInfo(userId));
@@ -81,19 +85,36 @@ public class UserController {
         }
     }
 
-    // 스터디 신청
+    /**
+     * 스터디 신청
+     *
+     * @param userId    사용자ID
+     * @param studyId   스터디ID
+     * @param joinStudyDto  비밀번호
+     */
     @PostMapping("/{user_id}/study/{study_id}")
     public ResponseEntity<String> joinStudy(
-        @PathVariable("user_id") Long userId, @PathVariable("study_id") Long studyId,
-        @RequestParam(required = false) String password){
-        return ResponseEntity.ok(userService.joinStudy(userId,studyId,password));
+        @PathVariable("user_id") Long userId,
+        @PathVariable("study_id") Long studyId,
+        @RequestParam(required = false)
+        JoinStudyDto joinStudyDto) {
+
+        userService.joinStudy(userId,studyId,joinStudyDto.getPassword());
+        return ResponseEntity.ok().body("참여완료");
     }
 
-    // 스터디 탈퇴
+    /**
+     * 스터디 탈퇴
+     * @param userId    사용자ID
+     * @param studyId   스터디ID
+     */
     @DeleteMapping("/{user_id}/study/{study_id}")
-    public ResponseEntity<String> withdrawStudy(
-        @PathVariable("user_id") Long userId, @PathVariable("study_id") Long studyId){
-        return ResponseEntity.ok(userService.withdrawStudy(userId,studyId));
+    public ResponseEntity<?> withdrawStudy(
+        @PathVariable("user_id") Long userId,
+        @PathVariable("study_id") Long studyId){
+
+        userService.withdrawStudy(userId,studyId);
+        return ResponseEntity.ok().body("탈퇴완료");
     }
 
 }

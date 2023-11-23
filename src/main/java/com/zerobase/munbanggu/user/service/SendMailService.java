@@ -46,6 +46,12 @@ public class SendMailService {
     @Value("${secret.recipient}")
     private String sender;
 
+    /**
+     * 템플릿 생성
+     * @param to    수신자
+     * @param path  템플릿 위치
+     * @return MailDto
+     */
     private MailDto setTemplate(String to,String path){
         String subject;
         String[] split_path = path.split("/");
@@ -66,6 +72,13 @@ public class SendMailService {
         return mail;
     }
 
+    /**
+     * 메일 생성
+     *
+     * @param dto           메일dto
+     * @param emailValue    이메일인자(HashMap<String,String>
+     * @return MimeMessage
+     */
     private MimeMessage createMessage(MailDto dto, HashMap<String,String> emailValue){
         MimeMessage message = javaMailSender.createMimeMessage();
         try {
@@ -79,6 +92,12 @@ public class SendMailService {
         return  message;
     }
 
+    /**
+     * emailValue를 html템플릿에 매핑
+     * @param emailValue  이메일인자
+     * @param template    템플릿
+     * @return springTemplateEngine.process(template, context)
+     */
     private String setContext(HashMap<String,String> emailValue, String template){
         Context context = new Context();
         emailValue.forEach((key, value)->{
@@ -87,6 +106,12 @@ public class SendMailService {
         return springTemplateEngine.process(template, context);
     }
 
+    /**
+     * 이메일 전송
+     *
+     * @param email 이메일
+     * @return AuthenticationStatus(SUCCESS/FAIL)
+     */
     public AuthenticationStatus sendMailVerification(String email) {
         final String  TEMPLATE_NAME = "mailVerification.html";
         final String PATH = "src/main/resources/templates/"+TEMPLATE_NAME;
@@ -111,6 +136,7 @@ public class SendMailService {
 
     /**
      * 이메일 링크 인증
+     *
      * @param mailVerificationDto - email,token
      * @return AuthenticationStatus(SUCCESS/FAIL)
      */

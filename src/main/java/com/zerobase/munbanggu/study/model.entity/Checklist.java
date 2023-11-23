@@ -40,7 +40,7 @@ public class Checklist {
     @ManyToOne
     private Study study;
 
-    private Long user_id;
+    private Long userId;
 
     @Builder.Default
     private boolean done = false; // 체크리스트 완료 여부

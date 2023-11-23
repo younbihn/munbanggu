@@ -22,8 +22,6 @@ import org.springframework.stereotype.Service;
 public class StudyService {
 
     private final StudyRepository studyRepository;
-
-
     private final UserRepository userRepository;
     private final StudyMemberRepository studyMemberRepository;
 
@@ -50,7 +48,7 @@ public class StudyService {
         // StudyDto를 Study 엔티티로 변환
 
         return Study.builder()
-                .user_id(studyDto.getUserId())
+                .userId(studyDto.getUserId())
                 .title(studyDto.getTitle())
                 .content(studyDto.getContent())
                 .min_user(studyDto.getMinUser())
