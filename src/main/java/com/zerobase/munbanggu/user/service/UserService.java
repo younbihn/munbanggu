@@ -142,7 +142,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-
     @Transactional
     public void updateProfileImage(Long userId, String imageUrl) {
         User siteUser = userRepository.findById(userId)
@@ -157,7 +156,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
         return siteUser.getProfileImageUrl();
     }
-      
+
     /**
      * 이름과 핸드폰 번호가 일치하는 유저 찾기
      * @param name
