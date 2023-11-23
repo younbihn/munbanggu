@@ -49,4 +49,45 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> duplicatedExceptionHandler(DuplicatedEmailConflictException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
+
+    @ExceptionHandler(NotFoundChecklistException.class)
+    public ResponseEntity<ErrorResponse> notFoundChecklistExceptionHandler(NotFoundChecklistException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(FullCapacityException.class)
+    public ResponseEntity<ErrorResponse> fullCapacityExceptionHandler(NotFoundChecklistException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidNicknameException.class)
+    public ResponseEntity<ErrorResponse> invalidNicknameExceptionHandler(InvalidNicknameException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(WithdrawnMemberAccessException.class)
+    public ResponseEntity<ErrorResponse> withdrawnMemberAccessExceptionHandler(WithdrawnMemberAccessException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(WrongPasswordException.class)
+    public ResponseEntity<ErrorResponse> wrongPasswordExceptionHandler(WrongPasswordException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(UnmatchedUserException.class)
+    public ResponseEntity<ErrorResponse> unmatchedExceptionHandler(UnmatchedUserException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(AlreadyRegisteredNicknameException.class)
+    public ResponseEntity<ErrorResponse> alreadyRegisteredNicknameExceptionHandler(
+            AlreadyRegisteredNicknameException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
+    }
 }

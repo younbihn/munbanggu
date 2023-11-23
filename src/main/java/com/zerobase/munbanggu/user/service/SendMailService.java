@@ -1,17 +1,19 @@
 package com.zerobase.munbanggu.user.service;
+
 import static com.zerobase.munbanggu.common.type.RedisTime.MAIL_VALID;
 
+import com.zerobase.munbanggu.common.exception.InvalidTokenException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.exception.VerificationException;
 import com.zerobase.munbanggu.common.type.ErrorCode;
+import com.zerobase.munbanggu.common.util.RedisUtil;
 import com.zerobase.munbanggu.user.dto.MailDto;
 import com.zerobase.munbanggu.user.dto.MailVerificationDto;
-import com.zerobase.munbanggu.user.exception.UserException;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import com.zerobase.munbanggu.user.type.AuthenticationStatus;
-import com.zerobase.munbanggu.common.util.RedisUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-
 import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -117,15 +119,15 @@ public class SendMailService {
 
         // redis에 저장되어 있지 않으면 오류 반환
         if (saved_token==null)
-            throw new UserException(ErrorCode.INVALID_TOKEN);
+            throw new InvalidTokenException(ErrorCode.INVALID_TOKEN);
 
         // redis에 저장된 토큰과 일치하지 않으면 오류 반환
         if (!saved_token.equals(mailVerificationDto.getToken()))
-            throw new UserException(ErrorCode.INVALID_EMAIL);
+            throw new VerificationException(ErrorCode.INVALID_EMAIL);
 
         // 회원이 아니면 오류 반환
         userRepository.findByEmail(mailVerificationDto.getEmail())
-            .orElseThrow(() -> new UserException(ErrorCode.EMAIL_NOT_EXIST));
+            .orElseThrow(() -> new NotFoundUserException(ErrorCode.EMAIL_NOT_EXIST));
 
         // redis에서 정보삭제
         redisUtil.deleteData(mailVerificationDto.getEmail());
