@@ -1,4 +1,4 @@
-INSERT INTO "user" (email, name, password, nickname, auth_provider, role, phone, profile_image_url, failed_count, created_date, delete_date) VALUES
+INSERT INTO USER (email, name, password, nickname, auth_provider, role, phone, profile_image_url, failed_count, created_date, delete_date) VALUES
 ('user1@example.com', 'User One', 'password1', 'nickname1', NULL, 'USER', '010-1234-5671', 'http://example.com/profile1.jpg', 0, NOW(), NULL),
 ('user2@example.com', 'User Two', 'password2', 'nickname2', NULL, 'USER', '010-1234-5672', 'http://example.com/profile2.jpg', 0, NOW(), NULL),
 ('user3@example.com', 'User Three', 'password3', 'nickname3', NULL, 'USER', '010-1234-5673', 'http://example.com/profile3.jpg', 0, NOW(), NULL),

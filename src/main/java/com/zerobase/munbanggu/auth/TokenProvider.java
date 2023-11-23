@@ -2,7 +2,7 @@ package com.zerobase.munbanggu.auth;
 
 import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
-import com.zerobase.munbanggu.user.exception.InvalidTokenException;
+import com.zerobase.munbanggu.common.exception.InvalidTokenException;
 import com.zerobase.munbanggu.user.type.Role;
 import com.zerobase.munbanggu.common.util.RedisUtil;
 import io.jsonwebtoken.Claims;

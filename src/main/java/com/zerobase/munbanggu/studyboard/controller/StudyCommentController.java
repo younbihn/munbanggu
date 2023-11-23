@@ -3,9 +3,9 @@ package com.zerobase.munbanggu.studyboard.controller;
 import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_TOKEN;
 
 import com.zerobase.munbanggu.common.dto.PageResponse;
+import com.zerobase.munbanggu.common.exception.InvalidTokenException;
 import com.zerobase.munbanggu.studyboard.model.dto.CommentRequest;
 import com.zerobase.munbanggu.studyboard.service.StudyCommentService;
-import com.zerobase.munbanggu.user.exception.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

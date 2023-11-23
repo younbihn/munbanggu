@@ -2,7 +2,7 @@ package com.zerobase.munbanggu.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zerobase.munbanggu.common.dto.ErrorResponse;
-import com.zerobase.munbanggu.user.exception.DuplicatedEmailConflictException;
+import com.zerobase.munbanggu.common.exception.DuplicatedEmailConflictException;
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import java.io.IOException;
 import javax.servlet.ServletException;

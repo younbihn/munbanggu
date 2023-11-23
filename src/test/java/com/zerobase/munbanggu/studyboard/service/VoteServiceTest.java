@@ -2,7 +2,7 @@ package com.zerobase.munbanggu.studyboard.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.zerobase.munbanggu.studyboard.exception.AlreadyVotedException;
+import com.zerobase.munbanggu.common.exception.AlreadyVotedException;
 import com.zerobase.munbanggu.studyboard.model.entity.Vote;
 import com.zerobase.munbanggu.studyboard.model.entity.VoteOption;
 import com.zerobase.munbanggu.studyboard.repository.UserVoteRepository;

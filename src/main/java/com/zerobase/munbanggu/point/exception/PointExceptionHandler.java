@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.point.exception;
 
 import com.zerobase.munbanggu.common.dto.ErrorResponse;
-import com.zerobase.munbanggu.study.exception.NotFoundStudyException;
+import com.zerobase.munbanggu.common.exception.NotFoundStudyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

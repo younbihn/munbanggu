@@ -5,15 +5,15 @@ import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_OPTION;
 import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_USER_ID;
 import static com.zerobase.munbanggu.common.type.ErrorCode.NOT_FOUND_VOTE;
 
-import com.zerobase.munbanggu.studyboard.exception.AlreadyVotedException;
-import com.zerobase.munbanggu.studyboard.exception.NotFoundPostException;
+import com.zerobase.munbanggu.common.exception.AlreadyVotedException;
+import com.zerobase.munbanggu.common.exception.NotFoundPostException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
 import com.zerobase.munbanggu.studyboard.model.entity.UserVote;
 import com.zerobase.munbanggu.studyboard.model.entity.Vote;
 import com.zerobase.munbanggu.studyboard.model.entity.VoteOption;
 import com.zerobase.munbanggu.studyboard.repository.UserVoteRepository;
 import com.zerobase.munbanggu.studyboard.repository.VoteOptionRepository;
 import com.zerobase.munbanggu.studyboard.repository.VoteRepository;
-import com.zerobase.munbanggu.user.exception.NotFoundUserException;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
