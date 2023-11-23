@@ -128,6 +128,7 @@ public class StudyCommentService {
         } else if (parent.isDeleted() && parent.getChildren().size() > 1) {
             List<StudyComment> nonDeletedChildren = parent.getChildren().stream().filter(c -> !c.isDeleted()).collect(
                     Collectors.toList());
+
             if (nonDeletedChildren.size() > 1) {
                 comment.setDeleted(true);
                 return null;

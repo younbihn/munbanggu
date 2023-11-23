@@ -56,8 +56,8 @@ public class StudyCommentController {
     public ResponseEntity<PageResponse<CommentResponse>> retrieveAllComments(@PathVariable("post_id") Long postId,
             @RequestHeader(value = AUTHORIZATION_HEADER) String authHeader, @PageableDefault() Pageable pageable) {
         String token = tokenProvider.getRawToken(authHeader);
+
         return ResponseEntity.ok().body(PageResponse.from(
                 studyCommentService.retrieveAllComments(postId, token, pageable)));
     }
-
 }
