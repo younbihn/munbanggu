@@ -1,24 +1,24 @@
-package com.zerobase.munbanggu.common.service;
+package com.zerobase.munbanggu.common.util;
 
+import com.zerobase.munbanggu.auth.TokenProvider;
 import com.zerobase.munbanggu.common.exception.NotFoundChecklistException;
 import com.zerobase.munbanggu.common.exception.NotFoundStudyException;
 import com.zerobase.munbanggu.common.exception.NotFoundUserException;
 import com.zerobase.munbanggu.common.type.ErrorCode;
-import com.zerobase.munbanggu.common.util.JwtService;
 import com.zerobase.munbanggu.study.model.entity.Checklist;
 import com.zerobase.munbanggu.study.repository.ChecklistRepository;
 import com.zerobase.munbanggu.study.service.StudyService;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ValidationService {
   private final UserService userService;
   private final StudyService studyService;
-  private final JwtService jwtService;
+  private final TokenProvider tokenProvider;
   private final ChecklistRepository checklistRepository;
   /**
    * 토큰에서 유저 정보 추출하기
@@ -28,7 +28,7 @@ public class ValidationService {
    */
 
   public User getUserFromToken(String token){
-    User user = userService.getUser(jwtService.getIdFromToken(token))
+    User user = userService.getUser(tokenProvider.getId(token))
         .orElseThrow(()-> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
     if (user == null)
       throw new NotFoundUserException(ErrorCode.USER_NOT_EXIST);

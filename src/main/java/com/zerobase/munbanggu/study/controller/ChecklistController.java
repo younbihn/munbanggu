@@ -1,7 +1,7 @@
 package com.zerobase.munbanggu.study.controller;
 
 import com.zerobase.munbanggu.common.exception.InvalidTokenException;
-import com.zerobase.munbanggu.common.service.ValidationService;
+import com.zerobase.munbanggu.common.util.ValidationService;
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.study.dto.ChangeStatusDto;
 import com.zerobase.munbanggu.study.dto.CreateChecklistDto;
