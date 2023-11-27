@@ -26,6 +26,11 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+    database: mysql
+
+  sql:
+    unit:
+      mode: always
 
   mail:
     host: smtp.naver.com
