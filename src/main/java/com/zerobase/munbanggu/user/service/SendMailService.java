@@ -10,7 +10,6 @@ import com.zerobase.munbanggu.common.util.RedisUtil;
 import com.zerobase.munbanggu.user.dto.MailDto;
 import com.zerobase.munbanggu.user.dto.MailVerificationDto;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -48,6 +47,7 @@ public class SendMailService {
 
     /**
      * 템플릿 생성
+     *
      * @param to    수신자
      * @param path  템플릿 위치
      * @return MailDto
@@ -94,6 +94,7 @@ public class SendMailService {
 
     /**
      * emailValue를 html템플릿에 매핑
+     *
      * @param emailValue  이메일인자
      * @param template    템플릿
      * @return springTemplateEngine.process(template, context)
@@ -112,7 +113,7 @@ public class SendMailService {
      * @param email 이메일
      * @return AuthenticationStatus(SUCCESS/FAIL)
      */
-    public AuthenticationStatus sendMailVerification(String email) {
+    public boolean sendMailVerification(String email) {
         final String  TEMPLATE_NAME = "mailVerification.html";
         final String PATH = "src/main/resources/templates/"+TEMPLATE_NAME;
 
@@ -128,9 +129,10 @@ public class SendMailService {
             MimeMessage mimeMessage = createMessage(dto,emailValue);
             javaMailSender.send(mimeMessage);
             redisUtil.setData(email, token , MAIL_VALID.getTime());
-            return AuthenticationStatus.SUCCESS;}
+            return true;
+        }
         catch (Exception e){
-            return AuthenticationStatus.FAIL;
+            return false;
         }
     }
 
@@ -138,9 +140,9 @@ public class SendMailService {
      * 이메일 링크 인증
      *
      * @param mailVerificationDto - email,token
-     * @return AuthenticationStatus(SUCCESS/FAIL)
+     * @return 성공여부(T/F)
      */
-    public AuthenticationStatus verifyEmail(MailVerificationDto mailVerificationDto) {
+    public boolean verifyEmail(MailVerificationDto mailVerificationDto) {
         String saved_token = redisUtil.getData(mailVerificationDto.getEmail());
 
         // redis에 저장되어 있지 않으면 오류 반환
@@ -158,7 +160,7 @@ public class SendMailService {
         // redis에서 정보삭제
         redisUtil.deleteData(mailVerificationDto.getEmail());
 
-        return AuthenticationStatus.SUCCESS;
+        return true;
     }
 }
 

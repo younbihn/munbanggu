@@ -6,7 +6,6 @@ import com.zerobase.munbanggu.user.dto.ResetPwDto;
 import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -105,7 +104,7 @@ class UserServiceTest {
     resetPwDto.setInputCode("1234");
     resetPwDto.setToken("abc123");
 
-    assert(userService.verifyResetPw(user.getId(), resetPwDto).equals(AuthenticationStatus.SUCCESS));
+    assert(userService.verifyResetPw(user.getId(), resetPwDto));
 
   }
 }

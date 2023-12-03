@@ -1,14 +1,11 @@
 package com.zerobase.munbanggu.user.service;
 
-import static com.zerobase.munbanggu.common.type.ErrorCode.INVALID_CODE;
 import static com.zerobase.munbanggu.common.type.RedisTime.PHONE_VALID;
 
 import com.zerobase.munbanggu.common.exception.InvalidTokenException;
-import com.zerobase.munbanggu.common.exception.VerificationException;
 import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.common.util.RedisUtil;
 import com.zerobase.munbanggu.user.dto.SmsVerificationInfo;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,15 +67,12 @@ public class SendMessageService {
      * @param smsVerificationInfo - token, phoneNumber,inputCode
      * @return AuthenticationStatus(SUCCESS / FAIL)
      */
-    public AuthenticationStatus verifyCode(SmsVerificationInfo smsVerificationInfo) {
+    public boolean verifyCode(SmsVerificationInfo smsVerificationInfo) {
         SmsVerificationInfo info = redisUtil.getMsgVerificationInfo(smsVerificationInfo.getToken());
 
         if (info == null) {
             throw new InvalidTokenException(ErrorCode.INVALID_TOKEN);
         }
-        if (info.getVerificationCode().equals(smsVerificationInfo.getVerificationCode())) {
-            return AuthenticationStatus.SUCCESS;
-        }
-        throw new VerificationException(INVALID_CODE);
+        return info.getVerificationCode().equals(smsVerificationInfo.getVerificationCode());
     }
 }

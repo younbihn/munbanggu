@@ -1,7 +1,6 @@
 package com.zerobase.munbanggu.user.service;
 
 import com.zerobase.munbanggu.user.dto.MailVerificationDto;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,11 @@ class SendMailServiceTest {
     @Test
     public void sendMailTest(){
         try{
-            sendMailService.sendMailVerification(recipient_email);
+            if (sendMailService.sendMailVerification(recipient_email))
+                System.out.println("메일 발송 성공");
+            else {
+                System.out.println("메일 발송 실패 ");
+            }
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -31,6 +34,6 @@ class SendMailServiceTest {
         MailVerificationDto mailVerificationDto = new MailVerificationDto();
         mailVerificationDto.setEmail(recipient_email);
         mailVerificationDto.setToken("abc123");
-        assert (sendMailService.verifyEmail(mailVerificationDto).equals(AuthenticationStatus.SUCCESS) );
+        assert (sendMailService.verifyEmail(mailVerificationDto) );
     }
 }

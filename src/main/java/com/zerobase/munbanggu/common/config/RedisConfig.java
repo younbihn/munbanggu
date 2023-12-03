@@ -36,11 +36,9 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-
     public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
-
 }

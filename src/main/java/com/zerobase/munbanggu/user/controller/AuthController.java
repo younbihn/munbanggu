@@ -14,7 +14,6 @@ import com.zerobase.munbanggu.user.service.UserService;
 import com.zerobase.munbanggu.common.util.JwtService;
 import com.zerobase.munbanggu.user.service.SendMailService;
 import com.zerobase.munbanggu.user.service.SendMessageService;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,10 +64,10 @@ public class AuthController {
      * 메일 인증 controller
      *
      * @param mailVerificationDto 메일인증dto
-     * @return AuthenticationStatus (SUCCESS/FAIL) (인증성공여부)
+     * @return 성공여부(T/F)
      */
     @GetMapping(value = "/verify-email") //이메일 인증
-    public ResponseEntity<AuthenticationStatus> verifyMail(MailVerificationDto mailVerificationDto) {
+    public ResponseEntity<Boolean> verifyMail(MailVerificationDto mailVerificationDto) {
         return ResponseEntity.ok(sendMailService.verifyEmail(mailVerificationDto));
     }
 
@@ -76,10 +75,10 @@ public class AuthController {
      * 핸드폰 인증
      *
      * @param smsVerificationInfo 문자인증dto
-     * @return AuthenticationStatus (SUCCESS/FAIL) (인증성공여부)
+     * @return 성공여부(T/F)
      */
     @PostMapping("/verify-phone")
-    public ResponseEntity<AuthenticationStatus> verifySMS(@RequestBody SmsVerificationInfo smsVerificationInfo) {
+    public ResponseEntity<Boolean> verifySMS(@RequestBody SmsVerificationInfo smsVerificationInfo) {
         return ResponseEntity.ok(sendMessageService.verifyCode(smsVerificationInfo));
     }
 
@@ -91,7 +90,7 @@ public class AuthController {
      */
     @PostMapping("/find-id")
     public ResponseEntity<String> requestFindId(@RequestBody FindUserInfoDto findUserInfoDto) {
-        return ResponseEntity.ok(userService.requestFindId(findUserInfoDto));
+        return ResponseEntity.ok().body(userService.requestFindId(findUserInfoDto));
     }
 
     /**
@@ -105,7 +104,7 @@ public class AuthController {
     public ResponseEntity<String> verifyFindId(
         @PathVariable("user_id") Long userId,
         @RequestBody FindUserInfoDto findUserInfoDto) {
-        return ResponseEntity.ok(userService.returnId(userId,findUserInfoDto));
+        return ResponseEntity.ok().body(userService.returnId(userId,findUserInfoDto));
     }
 
     /**
@@ -119,7 +118,7 @@ public class AuthController {
     public ResponseEntity<String> requestResetPw(
         @PathVariable("user_id") Long userId,
         @RequestBody FindUserInfoDto findUserInfoDto) {
-        return ResponseEntity.ok(userService.requestResetPw(userId,findUserInfoDto));
+        return ResponseEntity.ok().body(userService.requestResetPw(userId,findUserInfoDto));
     }
 
     /**
@@ -127,12 +126,12 @@ public class AuthController {
      *
      * @param userId     사용자ID
      * @param resetPwDto 비밀번호재설정dto
-     * @return AuthenticationStatus (SUCCESS/FAIL)
+     * @return 성공여부(T/F)
      */
     @PostMapping("/find-pw/{user_id}/confirm")
-    public ResponseEntity<AuthenticationStatus> verifyResetPw(
+    public ResponseEntity<Boolean> verifyResetPw(
         @PathVariable("user_id") Long userId,
         @RequestBody ResetPwDto resetPwDto) {
-        return ResponseEntity.ok(userService.verifyResetPw(userId,resetPwDto));
+        return ResponseEntity.ok().body(userService.verifyResetPw(userId,resetPwDto));
     }
 }

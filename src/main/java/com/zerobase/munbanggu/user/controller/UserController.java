@@ -2,13 +2,15 @@ package com.zerobase.munbanggu.user.controller;
 
 import com.zerobase.munbanggu.aws.S3Uploader;
 import com.zerobase.munbanggu.auth.TokenProvider;
+import com.zerobase.munbanggu.common.exception.InvalidTokenException;
+import com.zerobase.munbanggu.common.exception.NotFoundUserException;
+import com.zerobase.munbanggu.common.type.ErrorCode;
 import com.zerobase.munbanggu.study.dto.JoinStudyDto;
 import com.zerobase.munbanggu.user.dto.GetUserDto;
 import com.zerobase.munbanggu.user.dto.UserRegisterDto;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.service.UserService;
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +30,16 @@ public class UserController {
 
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUser( @RequestHeader(name = AUTH_HEADER) String token,
-            @RequestBody GetUserDto getUserDto){
+        @PathVariable("user_id") Long userId,
+        @RequestBody GetUserDto getUserDto){
 
-        Optional<User> user = userService.getUser(tokenProvider.getId(token));
-        if (user.isPresent()) {
-            // 유효한 토큰으로 사용자 정보 가져오기
-            return ResponseEntity.ok(
-                    userService.updateUser(
-                            tokenProvider.getId(token),
-                            getUserDto
-                    )
-            );
-        }else {
-            // 토큰이 유효하지 않은 경우 처리
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
-        }
+        User user = userService.getUser(tokenProvider.getId(token))
+            .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
+
+        if (userId.equals(user.getId()))
+            return ResponseEntity.ok(userService.updateUser(tokenProvider.getId(token), getUserDto));
+        else
+            throw new InvalidTokenException(ErrorCode.TOKEN_UNMATCHED);
     }
 
     /**
@@ -53,7 +50,7 @@ public class UserController {
      */
     @GetMapping("/{user_id}")
     public ResponseEntity<GetUserDto> getUserInfo(@PathVariable("user_id")Long userId){
-        return ResponseEntity.ok(userService.getInfo(userId));
+        return ResponseEntity.ok().body(userService.getInfo(userId));
     }
 
     @Transactional(isolation=Isolation.SERIALIZABLE)

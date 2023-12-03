@@ -45,6 +45,4 @@ public class MailConfig {
         properties.setProperty("mail.smtp.ssl.enable","true");
         return properties;
     }
-
-
 }

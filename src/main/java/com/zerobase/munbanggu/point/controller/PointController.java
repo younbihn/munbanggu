@@ -7,7 +7,7 @@ import com.zerobase.munbanggu.point.service.PointService;
 import com.zerobase.munbanggu.study.model.entity.Study;
 import com.zerobase.munbanggu.study.repository.StudyRepository;
 import com.zerobase.munbanggu.user.model.entity.User;
-import com.zerobase.munbanggu.user.service.UserService;
+import com.zerobase.munbanggu.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class PointController {
     private final PointService pointService;
     private final StudyRepository studyRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 //    // 카카오페이결제 요청
 //    @GetMapping("/order/pay")
 //    public @ResponseBody ReadyResponse payReady(@RequestParam(name = "total_amount") int totalAmount, Order order, Model model) {
@@ -82,10 +82,12 @@ public class PointController {
     public ResponseEntity<?> refund(
         @PathVariable("study_id")Long studyId,@PathVariable("user_id")Long userId){
 
-      User user = userService.getUser(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
-      Study study = studyRepository.findById(studyId).orElseThrow(() -> new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST));
-      pointService.getUserRefund(user, study);
+      User user = userRepository.findById(userId)
+          .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
+      Study study = studyRepository.findById(studyId)
+          .orElseThrow(() -> new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST));
 
+      pointService.getUserRefund(user, study);
       return ResponseEntity.ok().body("환급이 완료되었습니다");
     }
 }

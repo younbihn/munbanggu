@@ -30,7 +30,6 @@ import com.zerobase.munbanggu.user.model.entity.StudyUser;
 import com.zerobase.munbanggu.user.model.entity.User;
 import com.zerobase.munbanggu.user.repository.StudyUserRepository;
 import com.zerobase.munbanggu.user.repository.UserRepository;
-import com.zerobase.munbanggu.user.type.AuthenticationStatus;
 import com.zerobase.munbanggu.user.type.LoginType;
 import java.util.Optional;
 import javax.persistence.EntityNotFoundException;
@@ -257,20 +256,20 @@ public class UserService {
      *
      * @param userId       사용자ID
      * @param resetPwDto - token, newPassword, inputCode
-     * @return AuthenticationStatus (SUCCESS/FAIL)
+     * @return 성공여부(T/F)
      */
-    public AuthenticationStatus verifyResetPw(Long userId, ResetPwDto resetPwDto) {
+    public boolean verifyResetPw(Long userId, ResetPwDto resetPwDto) {
+        boolean result = true;
+
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
         SmsVerificationInfo info = redisUtil.getMsgVerificationInfo(resetPwDto.getToken());
 
-        if (info == null) {
+        if (info == null)
             throw new NotFoundUserException(USER_NOT_EXIST);
-        }
 
-        if (!user.getEmail().equals(info.getEmail())) {
+        if (!user.getEmail().equals(info.getEmail()))
             throw new UnmatchedUserException(USER_UNMATCHED);
-        }
 
         // 핸드폰 인증 번호가 같으면
         if (info.getVerificationCode().equals(resetPwDto.getInputCode())) {
@@ -279,10 +278,9 @@ public class UserService {
 
             // 인증 정보 삭제
             redisUtil.deleteMsgVerificationInfo(resetPwDto.getToken());
-            return AuthenticationStatus.SUCCESS;
-        } else {
-            return AuthenticationStatus.FAIL;
-        }
+        } else
+            result = false;
+        return result;
     }
 
     /**

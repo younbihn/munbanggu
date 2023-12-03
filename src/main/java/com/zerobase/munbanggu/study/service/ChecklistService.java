@@ -42,7 +42,7 @@ public class ChecklistService {
    * @param userId  사용자ID
    * @param studyId 스터디ID
    * @param title   체크리스트 내용
-   * @param ownerType 체크리스트가 속한 위치(스터디/ 개인)
+   * @param ownerType 체크리스트 타입 (스터디/ 개인)
    */
   @Transactional
   public void createChecklist(Long userId, Long studyId, String title, AccessType ownerType) {
@@ -56,7 +56,6 @@ public class ChecklistService {
         .accessType(ownerType)
         .build();
     checklist.setStudy(study);
-    studyRepository.save(study);
     checklistRepository.save(checklist);
   }
 
@@ -72,7 +71,7 @@ public class ChecklistService {
     Checklist checklist = checklistRepository.findById(checklistId)
         .orElseThrow(() -> new NotFoundChecklistException(ErrorCode.CHECKLIST_NOT_EXIST));
 
-    if (checklist != null && userId.equals(checklist.getUserId())) {
+    if (userId.equals(checklist.getUserId())) {
       checklist.setTodo(title);
       checklistRepository.save(checklist);
     } else
@@ -90,7 +89,7 @@ public class ChecklistService {
     Checklist checklist = checklistRepository.findById(checklistId)
         .orElseThrow(() -> new NotFoundChecklistException(ErrorCode.CHECKLIST_NOT_EXIST));
 
-    if (checklist != null && userId.equals(checklist.getUserId()))
+    if (userId.equals(checklist.getUserId()))
       checklistRepository.deleteById(checklistId);
     else
       throw new InvalidTokenException(ErrorCode.TOKEN_UNMATCHED);
@@ -167,15 +166,14 @@ public class ChecklistService {
    * @return double 개인 달성도
    */
   public double getParticipationRate(Long userId, Long studyId) {
-    User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new NotFoundUserException(ErrorCode.USER_NOT_EXIST));
     Study study = studyRepository.findById(studyId)
         .orElseThrow(() -> new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST));
 
-    if (user != null && study != null) {
-      StudyUser studyUser = studyUserRepository.findByUserAndStudy(user, study);
-      return studyUser.getParticipationRate();
-    }
-    throw new NullPointerException();
+    StudyUser studyUser = studyUserRepository.findByUserAndStudy(user, study);
+    return studyUser.getParticipationRate();
+
   }
 
   /**
@@ -187,20 +185,17 @@ public class ChecklistService {
     Study study = studyRepository.findById(studyId)
         .orElseThrow(() -> new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST));
 
-    if (study != null) {
-      List<StudyUser> participants = studyUserRepository.findByStudy(study);
-      int participantNum = participants.size();
-      double total = 0.0;
+    List<StudyUser> participants = studyUserRepository.findByStudy(study);
+    int participantNum = participants.size();
+    double total = 0.0;
 
-      if (participantNum == 0)
-        throw new InsufficientUserCapacityException(ErrorCode.INSUFFICIENT_USER_CAPACITY);
+    if (participantNum == 0)
+      throw new InsufficientUserCapacityException(ErrorCode.INSUFFICIENT_USER_CAPACITY);
 
-      for (StudyUser studyUser : participants) {
-        total += studyUser.getParticipationRate();
-      }
-      return total / participantNum;
+    for (StudyUser studyUser : participants) {
+      total += studyUser.getParticipationRate();
     }
-    throw new NotFoundStudyException(ErrorCode.STUDY_NOT_EXIST);
+    return total / participantNum;
   }
 
   /**
