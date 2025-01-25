@@ -49,10 +49,12 @@
 - 참가비 및 상금 관리: 스터디 참가비 지불 및 환급.
 
 ## ERD
-![erd](img/munbanggu_erd.png)
+![image](https://github.com/user-attachments/assets/d00d1b26-8c95-45b0-9ff3-acfdd7de1b41)
+
 
 ## 시스템 아키텍처
-![architecture](img/munbanggu_architecture.png)
+![image](https://github.com/user-attachments/assets/71181e9c-3ddd-4ff7-92f0-b74d50e674eb)
+
 
 ## 기술 스택
 
