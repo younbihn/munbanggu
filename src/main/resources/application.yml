@@ -1,0 +1,66 @@
+spring:
+  profiles:
+    include:
+      - secret
+      - oauth
+      - s3
+      - rds
+      - redis
+
+  servlet:
+    multipart:
+      enabled: true
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.connection-name}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${rds.username}
+    password: ${rds.password}
+
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database: mysql
+
+  sql:
+    unit:
+      mode: always
+
+  mail:
+    host: smtp.naver.com
+    port: 465
+    properties:
+      debug: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+
+  redis:
+    host: ${redis.host}
+    port: ${redis.port}
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
+  kakao:
+    api:
+      baseUrl: https://kapi.kakao.com/v1/payment/ready
+      adminKey: 53937b88b5a19ee69356275a66741044

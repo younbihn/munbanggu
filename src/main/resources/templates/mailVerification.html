@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>[문방구] 메일 인증 안내</title>
+  <style>
+    body{
+      padding: 0 30px;
+    }
+    h1{
+      font-size:23px;
+    }
+    p{
+      font-size: 15px;
+    }
+    table{
+      background-color: #d3d2d2;
+      height: 70px;
+      border-radius: 16px;
+    }
+    td{
+      padding : 0px 20px;
+      text-align: center; vertical-align: middle; font-size: 30px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>안녕하세요,<br>커뮤니티 플랫폼 [문방구] 입니다.</h1>
+<p><br>이메일 인증을 위해 아래 코드를 화면에 입력해주세요.
+<table>
+<tbody><tr>
+  <td th:text="${link}"></td></tr></tbody></table></p></body>
+</html>
+
+

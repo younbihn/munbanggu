@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+application-secret.yml
+application-oauth.yml
+application-s3.yml
+application-rds.yml
+application-redis.yml.DS_Store
